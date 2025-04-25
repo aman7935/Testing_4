@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Testing#4</string>
+    <string name="splash_screen_1_string">Curated styles with a modern twist on \n classic Indian designs.</string>
+    <string name="exclusive_collections">Exclusive Collections</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="forgot_password">Enter your mobile number or email id we’ll send you reset \n password link</string>
+    <string name="otp_string">Please enter the code we sent over Email id to</string>
+</resources>
