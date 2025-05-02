@@ -103,8 +103,17 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/user_icon"
                 android:drawablePadding="7dp"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:padding="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/validationUsername"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:textColor="#FF0000"
+            android:textSize="10dp"
+            android:visibility="invisible"></TextView>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -112,7 +121,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="4dp"
             android:hint="Email ID"
             app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="12dp"
@@ -121,20 +130,29 @@
             app:boxCornerRadiusTopStart="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/LoginPassword"
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/envelopeopen"
                 android:drawablePadding="7dp"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:padding="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/emailValidation"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:textColor="#FF0000"
+            android:textSize="10dp"
+            android:visibility="invisible"></TextView>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout3"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="4dp"
             android:hint="Contact Number"
             app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="12dp"
@@ -148,7 +166,9 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/phonecall"
                 android:drawablePadding="7dp"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+
+                android:padding="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -168,7 +188,8 @@
                 app:boxCornerRadiusBottomEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusTopStart="12dp">
+                app:boxCornerRadiusTopStart="12dp"
+                app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signUpPassword"
@@ -176,41 +197,62 @@
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/lockkey"
                     android:drawablePadding="7dp"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+
+                    android:padding="10dp" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/passwordValidation"
+                android:layout_width="317dp"
+                android:layout_height="wrap_content"
+                android:textColor="#FF0000"
+                android:textSize="10dp"
+                android:visibility="invisible"></TextView>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout5"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginTop="15dp"
-                android:hint="Password"
+                android:layout_marginTop="4dp"
+                android:hint="Confirm Password"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusTopStart="12dp">
+                app:boxCornerRadiusTopStart="12dp"
+                app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/SignupConfirmPass"
+                    android:id="@+id/confirmPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/lockkey"
+                    android:drawableEnd="@drawable/eye_open_icon"
                     android:drawablePadding="7dp"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:padding="10dp" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/confirmPassValidation"
+                android:layout_width="317dp"
+                android:layout_height="wrap_content"
+                android:textColor="#FF0000"
+                android:textSize="10dp"
+                android:visibility="invisible"></TextView>
 
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/appCompatButton"
+                android:id="@+id/signupButton"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="44dp"
+                android:layout_marginTop="13dp"
                 android:background="@drawable/button_background"
                 android:text="Sign UP"
-                android:textColor="@color/white"
-                android:layout_marginTop="13dp"/>
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

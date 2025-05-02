@@ -6,4 +6,18 @@
     </style>
 
     <style name="Theme.Testing4" parent="Base.Theme.Testing4" />
+
+    <style name="circle">
+        <item name="cornerSize">50%</item>
+        <item name="strokeWidth">5dp</item>
+        <item name="strokeColor">#000000</item>
+    </style>
+
+    <style name="radius">
+        <item name="cornerSize">8%</item>
+        <item name="strokeWidth">3dp</item>
+        <item name="strokeColor">#000000</item>
+    </style>
+
+
 </resources>

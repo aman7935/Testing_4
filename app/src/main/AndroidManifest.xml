@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -26,20 +28,24 @@
             android:exported="false"
             android:theme="@style/Theme.Testing4" />
         <activity
-            android:name=".OnboardingActivity"
+            android:name=".views.activity.OnboardingActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
-            android:exported="true">
+            android:name=".views.activity.SplashActivity"
+            android:exported="false">
+
+        </activity>
+        <activity
+            android:name=".views.activity.MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity
-            android:name=".views.MainActivity"
-            android:exported="false" />
     </application>
 
 </manifest>

@@ -10,4 +10,18 @@
 
     <string name="forgot_password">Enter your mobile number or email id we’ll send you reset \n password link</string>
     <string name="otp_string">Please enter the code we sent over Email id to</string>
+    <string name="choose_category_wise">Choose category wise</string>
+    <string name="search_icon">Search Icon</string>
+    <string name="search_any_product">Search any Product..</string>
+    <string name="miscellanious">Miscellanious</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">Home</string>
+    <string name="category">Category</string>
+    <string name="orders">Orders</string>
+    <string name="electronics">Electronics</string>
+    <string name="price">price</string>
+    <string name="name">name</string>
+    <string name="you">You</string>
+    <string name="add_to_bag">Add to Bag</string>
 </resources>

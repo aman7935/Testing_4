@@ -1,4 +1,4 @@
-package com.example.testing4.adapters
+package com.example.testing4.adapters.viewpageradapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,12 +12,12 @@ class ViewPagerAdapter(val viewPagerItemsModelList: List<OnboardingItemModel>)
 
     class ViewPagerViewHolder(val binding : OnbordingItemsBinding) : RecyclerView.ViewHolder(binding.root){}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPagerAdapter.ViewPagerViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPagerViewHolder {
         val binding = OnbordingItemsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewPagerViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewPagerAdapter.ViewPagerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewPagerViewHolder, position: Int) {
         holder.binding.sliderimage.setImageResource(viewPagerItemsModelList[position].img as Int)
     }
 

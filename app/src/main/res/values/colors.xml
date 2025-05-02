@@ -3,4 +3,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#007FBF</color>
+    <color name="mainColor">#52814E</color>
+    <color name="default_icon_color">#939396</color>
+    <color name="selected_icon_color">#52814E</color>
+    <color name="shadow_color">#80000000</color>
+    <color name="like_color">#A02424</color>
+    <color name="purple_color">#7000FF</color>
+
+
 </resources>

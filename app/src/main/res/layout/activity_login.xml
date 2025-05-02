@@ -65,6 +65,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/singUpButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" Signup"
@@ -101,6 +102,7 @@
                 android:id="@+id/userNameAndEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:drawableStart="@drawable/user_icon"
                 android:drawablePadding="7dp"
                 android:inputType="textEmailAddress" />
@@ -118,16 +120,52 @@
             app:boxCornerRadiusBottomEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp">
+            app:boxCornerRadiusTopStart="12dp"
+            app:endIconMode="password_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/LoginPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:drawableStart="@drawable/lockkey"
                 android:drawablePadding="7dp"
-                android:inputType="textEmailAddress" />
+                android:inputType="textPassword" />
+
+
         </com.google.android.material.textfield.TextInputLayout>
+        
+        <!--<androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/edtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/item_background1"
+                android:hint="Enter Email"
+                android:paddingHorizontal="10dp"
+                android:textSize="12sp"
+                android:layout_marginTop="16dp"
+                android:drawableStart="@drawable/user_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:text="Email"
+                android:layout_marginStart="12dp"
+                android:textColor="@color/black"
+                android:background="@color/white"
+                android:paddingHorizontal="3dp"
+                app:layout_constraintStart_toStartOf="@+id/edtEmail"
+                app:layout_constraintTop_toTopOf="@id/edtEmail"
+                app:layout_constraintBottom_toTopOf="@id/edtEmail"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         <RelativeLayout
             android:id="@+id/l3"
@@ -154,7 +192,7 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/appCompatButton"
+        android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginHorizontal="44dp"
@@ -176,7 +214,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatButton"
         app:layout_constraintVertical_bias="0.675">
 
         <LinearLayout
