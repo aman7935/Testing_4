@@ -3,6 +3,7 @@ package com.example.testing4.datastore
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -14,14 +15,11 @@ val Context.dataStore by preferencesDataStore(name = "pref")
 
 class DataStoreManager(private val context: Context) {
 
-
     companion object {
         private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
         private val USER_NAME = stringPreferencesKey("user_name")
-        private val USER_EMAIL = stringPreferencesKey("user_email")
-        private val USER_CONTACT = stringPreferencesKey("user_contact")
-        private val USER_PASSWORD = stringPreferencesKey("user_password")
         private val LOGGED_IN = booleanPreferencesKey("logged_in")
+        private val favouriteItemId = intPreferencesKey("id")
     }
 
     suspend fun saveOnboardingComplete(completed: Boolean) {
@@ -56,4 +54,5 @@ class DataStoreManager(private val context: Context) {
         .map { pref ->
             pref[LOGGED_IN] ?: false
         }
+
 }

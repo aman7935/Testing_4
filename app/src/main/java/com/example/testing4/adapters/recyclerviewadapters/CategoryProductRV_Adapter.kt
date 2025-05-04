@@ -2,16 +2,21 @@ package com.example.testing4.adapters.recyclerviewadapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.testing4.R
+import com.example.testing4.clicklisteners.OnClickSave
 import com.example.testing4.clicklisteners.OnItemClickListenerDetails
 import com.example.testing4.databinding.CategoryProductIvBinding
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.utils.ViewUtils
 
-class CategoryProductRV_Adapter(private var itemList : List<ProductsItem>, private val onItemClickListenerForDetails : OnItemClickListenerDetails)
-    : RecyclerView.Adapter<CategoryProductRV_Adapter.ItemViewHolder>() {
+class CategoryProductRV_Adapter(
+    private var itemList: List<ProductsItem>,
+    private val onItemClickListenerForDetails: OnItemClickListenerDetails,
+    private val onClickSave: OnClickSave
+) : RecyclerView.Adapter<CategoryProductRV_Adapter.ItemViewHolder>() {
 
     inner class ItemViewHolder(val binding: CategoryProductIvBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -28,8 +33,14 @@ class CategoryProductRV_Adapter(private var itemList : List<ProductsItem>, priva
 
                 likeButton.setOnClickListener {
                     isFavorites = !isFavorites
-                    val newColor = if (isFavorites) R.color.like_color else R.color.default_icon_color
+                    val newColor =
+                        if (isFavorites) R.color.like_color else R.color.default_icon_color
                     ViewUtils.setIconColor(binding.likeButton, newColor, itemView.context)
+
+                    if (isFavorites){
+                        onClickSave.onSaveProduct(item)
+                        Toast.makeText(itemView.context, "Saved to Favorites", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -39,7 +50,8 @@ class CategoryProductRV_Adapter(private var itemList : List<ProductsItem>, priva
         parent: ViewGroup,
         viewType: Int
     ): CategoryProductRV_Adapter.ItemViewHolder {
-        val binding = CategoryProductIvBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            CategoryProductIvBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
 
@@ -51,9 +63,9 @@ class CategoryProductRV_Adapter(private var itemList : List<ProductsItem>, priva
 
     }
 
-    override fun getItemCount(): Int  = itemList.size
+    override fun getItemCount(): Int = itemList.size
 
-     fun updateList(list : List<ProductsItem>){
+    fun updateList(list: List<ProductsItem>) {
         this.itemList = list
         notifyDataSetChanged()
     }

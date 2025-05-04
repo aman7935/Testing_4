@@ -4,6 +4,8 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.gms.google-services")
     alias(libs.plugins.navigation.safeargs.kotlin)
+
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -81,6 +83,15 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-analytics")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+
+    val room_version = "2.7.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+
+    ksp("androidx.room:room-compiler:$room_version")
+
+    annotationProcessor("androidx.room:room-compiler:$room_version")
 
 
 

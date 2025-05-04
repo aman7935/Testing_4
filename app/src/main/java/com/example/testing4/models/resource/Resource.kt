@@ -15,5 +15,6 @@ data class Resource<out T>(
 
         fun <T> loading(data: T?, message: String?) =
             Resource(result = Result.LOADING, data = data, message = null)
+
     }
 }

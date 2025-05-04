@@ -5,56 +5,87 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.testing4.R
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import com.example.testing4.adapters.recyclerviewadapters.FavouritesAdapter
+import com.example.testing4.api.RetrofitInstance
+import com.example.testing4.clicklisteners.OnItemClickDelete
+import com.example.testing4.clicklisteners.OnItemClickListenerDetails
+import com.example.testing4.database.DataBaseProvider
+import com.example.testing4.database.Database
+import com.example.testing4.databinding.FragmentFavoritesBinding
+import com.example.testing4.factory.Factory
+import com.example.testing4.models.entities.ProductItemsEntity
+import com.example.testing4.models.resource.Result
+import com.example.testing4.repo.Repo
+import com.example.testing4.utils.Loader
+import com.example.testing4.viewmodels.ViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FavoritesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FavoritesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentFavoritesBinding
+    private lateinit var viewModel: ViewModel
+    private lateinit var repo: Repo
+    private lateinit var db: Database
+    private lateinit var myAdapter: FavouritesAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorites, container, false)
+        binding = FragmentFavoritesBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FavoritesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FavoritesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        db = DataBaseProvider.getInstance(requireContext())
+        repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
+
+        // Initialize the ViewModel
+        viewModel = ViewModelProvider(this, Factory(repo)).get(ViewModel::class.java)
+
+        observeData()
+        setUpRecyclerView()
+        viewModel.getAllFavorites()
+    }
+
+    private fun setUpRecyclerView() {
+        myAdapter = FavouritesAdapter(
+            emptyList(),
+            onItemClickListenerDetails = object : OnItemClickListenerDetails {
+                override fun onClickForDetails(id: Int) {
+                    val bundle = Bundle().apply {
+                        putInt("id", id)
+                    }
+                }
+            },
+            onItemClickDelete = object : OnItemClickDelete{
+                override fun onClickDelete(item: ProductItemsEntity) {
+                    viewModel.deleteFromFavorites(item.id)
+                }
+
+            }
+        )
+        binding.favouriteRV.adapter = myAdapter
+    }
+    private fun observeData() {
+        viewModel.favorites.observe(viewLifecycleOwner) { it ->
+            when (it.result) {
+                Result.LOADING -> Loader.showDialog(requireContext())
+                Result.SUCCESS -> {
+                    Loader.hideDialog()
+                    it.data?.let { products ->
+                        myAdapter.updateList(products)
+                    }
+                }
+                Result.FAILURE -> {
+                    Loader.hideDialog()
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
+        }
     }
 }
+

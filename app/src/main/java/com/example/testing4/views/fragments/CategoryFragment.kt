@@ -14,7 +14,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.testing4.R
 import com.example.testing4.adapters.recyclerviewadapters.CategoryProductRV_Adapter
 import com.example.testing4.api.RetrofitInstance
+import com.example.testing4.clicklisteners.OnClickSave
 import com.example.testing4.clicklisteners.OnItemClickListenerDetails
+import com.example.testing4.database.DataBaseProvider
+import com.example.testing4.database.Database
 import com.example.testing4.databinding.FragmentCategoryBinding
 import com.example.testing4.factory.Factory
 import com.example.testing4.models.product.ProductsItem
@@ -24,24 +27,37 @@ import com.example.testing4.utils.Loader
 import com.example.testing4.viewmodels.ViewModel
 
 
-class CategoryFragment : Fragment(), OnItemClickListenerDetails {
+class CategoryFragment : Fragment() {
 
     private lateinit var binding: FragmentCategoryBinding
     private lateinit var myAdapter: CategoryProductRV_Adapter
     private val productItems = ArrayList<ProductsItem>()
     private lateinit var item: String
     private var filteredItems = ArrayList<ProductsItem>()
+    private lateinit var viewModel: ViewModel
+    private lateinit var repo: Repo
+    private lateinit var db: Database
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCategoryBinding.inflate(inflater, container, false)
+
+        // ✅ First: initialize db
+        db = DataBaseProvider.getInstance(requireContext())
+
+        // ✅ Then: initialize repo with db
+        repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
+
+        // ✅ Then: initialize viewModel with factory
+        viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         item = arguments?.getString("name") ?: ""
         setUpRecyclerView()
         observeData()
@@ -49,20 +65,12 @@ class CategoryFragment : Fragment(), OnItemClickListenerDetails {
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
-
-            override fun beforeTextChanged(
-                s: CharSequence?, start: Int, count: Int, after: Int
-            ) {}
-
-            override fun onTextChanged(
-                s: CharSequence?, start: Int, before: Int, count: Int
-            ) {}
-
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val query = binding.searchEditText.text.toString().lowercase().trim()
                 filterProducts(query)
             }
-
         })
 
     }
@@ -79,14 +87,26 @@ class CategoryFragment : Fragment(), OnItemClickListenerDetails {
     }
 
     private fun setUpRecyclerView() {
-        myAdapter = CategoryProductRV_Adapter(productItems, this)
+        myAdapter = CategoryProductRV_Adapter(
+            productItems, onItemClickListenerForDetails = object : OnItemClickListenerDetails {
+                override fun onClickForDetails(id: Int) {
+                    val bundle = Bundle().apply {
+                        putInt("id", id)
+                    }
+                    findNavController().navigate(R.id.detailsFragment, bundle)
+                }
+            },
+            onClickSave = object : OnClickSave {
+                override fun onSaveProduct(items: ProductsItem) {
+                    viewModel.saveToFavorites(items)
+                }
+            }
+        )
         binding.categoryRV2.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.categoryRV2.adapter = myAdapter
     }
 
     private fun observeData() {
-        val repo = Repo(RetrofitInstance.retroFitApi)
-        val viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
 
         viewModel.products.observe(viewLifecycleOwner) { resource ->
             when (resource.result) {
@@ -107,12 +127,5 @@ class CategoryFragment : Fragment(), OnItemClickListenerDetails {
             }
         }
         viewModel.getProducts()
-    }
-
-    override fun onClickForDetails(id: Int) {
-        val bundle = Bundle().apply {
-            putInt("id", id)
-        }
-        findNavController().navigate(R.id.detailsFragment, bundle)
     }
 }

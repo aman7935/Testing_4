@@ -18,6 +18,8 @@ import com.example.testing4.adapters.viewpageradapters.HomeScreenViewPagerAdapte
 import com.example.testing4.api.RetrofitInstance
 import com.example.testing4.clicklisteners.OnItemClickListener
 import com.example.testing4.clicklisteners.OnItemClickListenerDetails
+import com.example.testing4.database.DataBaseProvider
+import com.example.testing4.database.Database
 import com.example.testing4.databinding.FragmentHomeBinding
 import com.example.testing4.factory.Factory
 import com.example.testing4.models.category.CategoryItem
@@ -31,12 +33,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.getValue
 
-class HomeFragment : Fragment(), OnItemClickListener, OnItemClickListenerDetails{
+class HomeFragment : Fragment(){
     private lateinit var binding: FragmentHomeBinding
     private lateinit var categoryRVAdapter: CategoryRVAdapter
     private lateinit var viewModel: ViewModel
     private lateinit var productAdapter: ProductAdapter
+    private lateinit var db: Database
+
 
     private val categoryItem = ArrayList<CategoryItem>()
     private val productItem = ArrayList<ProductsItem>()
@@ -68,18 +73,32 @@ class HomeFragment : Fragment(), OnItemClickListener, OnItemClickListenerDetails
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        db = DataBaseProvider.getInstance(requireContext())
         observeData()
         setUpRecyclerViewsAndViewPager()
+
     }
 
     private fun setUpRecyclerViewsAndViewPager() {
-        categoryRVAdapter = CategoryRVAdapter(categoryItem, this)
+
+        categoryRVAdapter = CategoryRVAdapter(categoryItem, onItemClickListener = object : OnItemClickListener {
+            override fun onclick(name: String) {
+                val bundle = Bundle().apply { putString("name", name) }
+                findNavController().navigate(R.id.categoryFragment, bundle)
+            }
+        })
         binding.categoryRv.adapter = categoryRVAdapter
 
         binding.homeScreenViewPager.adapter = HomeScreenViewPagerAdapter(viewPagerItems)
         binding.dotsIndicatorHomeViewpager.attachTo(binding.homeScreenViewPager)
         
-        productAdapter = ProductAdapter(productItem, this)
+        productAdapter = ProductAdapter(productItem, onItemClickListenerDetails = object : OnItemClickListenerDetails {
+            override fun onClickForDetails(id: Int) {
+                val bundle = Bundle().apply { putInt("id", id) }
+                findNavController().navigate(R.id.detailsFragment, bundle)
+            }
+        })
         binding.HomeScreenRecyclerViewCloth.adapter = productAdapter
 
         binding.homeScreenViewPager.registerOnPageChangeCallback(object :
@@ -103,7 +122,7 @@ class HomeFragment : Fragment(), OnItemClickListener, OnItemClickListenerDetails
         scrollJob = viewLifecycleOwner.lifecycleScope.launch {
             while (isActive) {
                 delay(2000)
-                current = (current + 1) % categoryRVAdapter.itemCount
+                current = (current + 1) % viewPagerItems.size
                 binding.homeScreenViewPager.setCurrentItem(current, true)
             }
         }
@@ -120,7 +139,7 @@ class HomeFragment : Fragment(), OnItemClickListener, OnItemClickListenerDetails
     }
 
     private fun observeData() {
-        val repo = Repo(RetrofitInstance.retroFitApi)
+        val repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
         viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
 
         isCategoryLoaded = false
@@ -175,11 +194,6 @@ class HomeFragment : Fragment(), OnItemClickListener, OnItemClickListenerDetails
         viewModel.getProducts()
     }
 
-    override fun onclick(name : String) {
-        val bundle = Bundle().apply { putString("name", name) }
-        findNavController().navigate(R.id.categoryFragment, bundle)
-    }
-
     override fun onPause() {
         super.onPause()
         Loader.hideDialog()
@@ -188,13 +202,6 @@ class HomeFragment : Fragment(), OnItemClickListener, OnItemClickListenerDetails
     override fun onDestroy() {
         super.onDestroy()
         scrollJob?.cancel()
-    }
-
-    override fun onClickForDetails(id: Int) {
-        val bundle = Bundle().apply {
-            putInt("id", id)
-        }
-        findNavController().navigate(R.id.detailsFragment, bundle)
     }
 
 }

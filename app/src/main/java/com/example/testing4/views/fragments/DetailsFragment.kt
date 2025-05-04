@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.testing4.adapters.viewpageradapters.DetailViewPagerAdapter
 import com.example.testing4.api.RetrofitInstance
+import com.example.testing4.database.DataBaseProvider
+import com.example.testing4.database.Database
 import com.example.testing4.databinding.FragmentDetailsBinding
 import com.example.testing4.factory.Factory
 import com.example.testing4.models.product.ProductsItem
@@ -25,13 +27,17 @@ class DetailsFragment : Fragment() {
     private lateinit var item: ProductsItem
     private var id: Int = -1
     private lateinit var myAdapter: DetailViewPagerAdapter
+    private lateinit var db: Database
+    private lateinit var repo: Repo
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDetailsBinding.inflate(inflater, container, false)
-        val repo = Repo(RetrofitInstance.retroFitApi)
+        db = DataBaseProvider.getInstance(requireContext())
+        repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
         viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
         observeData()
 
