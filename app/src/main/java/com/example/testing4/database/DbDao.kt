@@ -14,6 +14,7 @@ interface DbDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(dbTable: ProductItemsEntity)
 
+
     @Query("SELECT * FROM ProductItemsEntity")
     fun getAllProducts(): LiveData<List<ProductItemsEntity>>
 

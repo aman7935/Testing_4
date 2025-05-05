@@ -115,5 +115,6 @@ class ViewModel(private val repo: Repo) : ViewModel() {
             repo.deleteProduct(productID)
         }
     }
-}
+
+    val savedProducts: LiveData<List<ProductItemsEntity>> = repo.getAllProducts()}
 

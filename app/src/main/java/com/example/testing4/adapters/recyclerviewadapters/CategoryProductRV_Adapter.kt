@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.testing4.R
+import com.example.testing4.clicklisteners.OnClickDeleteFromCategory
 import com.example.testing4.clicklisteners.OnClickSave
 import com.example.testing4.clicklisteners.OnItemClickListenerDetails
 import com.example.testing4.databinding.CategoryProductIvBinding
@@ -15,13 +16,12 @@ import com.example.testing4.utils.ViewUtils
 class CategoryProductRV_Adapter(
     private var itemList: List<ProductsItem>,
     private val onItemClickListenerForDetails: OnItemClickListenerDetails,
-    private val onClickSave: OnClickSave
+    private val onClickSave: OnClickSave,
+    private val onClickDelelteFromCategory: OnClickDeleteFromCategory
 ) : RecyclerView.Adapter<CategoryProductRV_Adapter.ItemViewHolder>() {
 
     inner class ItemViewHolder(val binding: CategoryProductIvBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
-        var isFavorites = false
 
         fun bindData(item: ProductsItem) {
             binding.apply {
@@ -31,15 +31,27 @@ class CategoryProductRV_Adapter(
 
                 imageView2.setOnClickListener { onItemClickListenerForDetails.onClickForDetails(item.id) }
 
-                likeButton.setOnClickListener {
-                    isFavorites = !isFavorites
-                    val newColor =
-                        if (isFavorites) R.color.like_color else R.color.default_icon_color
-                    ViewUtils.setIconColor(binding.likeButton, newColor, itemView.context)
+                if (item.isFavourite == 1){
+                    ViewUtils.setIconColor(binding.likeButton, R.color.like_color, itemView.context)
+                }
+                else{
+                    ViewUtils.setIconColor(binding.likeButton, R.color.default_icon_color, itemView.context)
+                }
 
-                    if (isFavorites){
+                likeButton.setOnClickListener {
+                    if (item.isFavourite == 1){
+                        item.isFavourite = 0
+                        onClickDelelteFromCategory.onClickDeleteFromCategory(item)
+                        Toast.makeText(itemView.context, "Deleted from Favorites", Toast.LENGTH_SHORT)
+                            .show()
+                        ViewUtils.setIconColor(binding.likeButton, R.color.default_icon_color, itemView.context)
+                    }
+                    else if (item.isFavourite == 0){
+                        item.isFavourite = 1
+                        ViewUtils.setIconColor(binding.likeButton, R.color.like_color, itemView.context)
                         onClickSave.onSaveProduct(item)
-                        Toast.makeText(itemView.context, "Saved to Favorites", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(itemView.context, "Saved to Favorites", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }

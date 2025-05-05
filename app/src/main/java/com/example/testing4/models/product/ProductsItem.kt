@@ -9,5 +9,6 @@ data class ProductsItem(
     val price: Int,
     val slug: String,
     val title: String,
-    val updatedAt: String
+    val updatedAt: String,
+    var isFavourite : Int = 0
 )

@@ -14,12 +14,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.testing4.R
 import com.example.testing4.adapters.recyclerviewadapters.CategoryProductRV_Adapter
 import com.example.testing4.api.RetrofitInstance
+import com.example.testing4.clicklisteners.OnClickDeleteFromCategory
 import com.example.testing4.clicklisteners.OnClickSave
 import com.example.testing4.clicklisteners.OnItemClickListenerDetails
 import com.example.testing4.database.DataBaseProvider
 import com.example.testing4.database.Database
 import com.example.testing4.databinding.FragmentCategoryBinding
 import com.example.testing4.factory.Factory
+import com.example.testing4.models.entities.ProductItemsEntity
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.models.resource.Result
 import com.example.testing4.repo.Repo
@@ -37,7 +39,7 @@ class CategoryFragment : Fragment() {
     private lateinit var viewModel: ViewModel
     private lateinit var repo: Repo
     private lateinit var db: Database
-
+    private var dbItems = ArrayList<ProductItemsEntity>()
 
 
     override fun onCreateView(
@@ -45,13 +47,13 @@ class CategoryFragment : Fragment() {
     ): View? {
         binding = FragmentCategoryBinding.inflate(inflater, container, false)
 
-        // ✅ First: initialize db
+        // First: initialize db
         db = DataBaseProvider.getInstance(requireContext())
 
-        // ✅ Then: initialize repo with db
+        // Then: initialize repo with db
         repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
 
-        // ✅ Then: initialize viewModel with factory
+        // Then: initialize viewModel with factory
         viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
         return binding.root
     }
@@ -60,6 +62,9 @@ class CategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         item = arguments?.getString("name") ?: ""
         setUpRecyclerView()
+        viewModel.getAllFavorites()
+
+        observeAllFavorites()
         observeData()
 
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
@@ -75,14 +80,21 @@ class CategoryFragment : Fragment() {
 
     }
 
+    private fun observeAllFavorites(){
+        viewModel.favorites.observeForever { data ->
+            dbItems.clear()
+            data.data?.let { dbItems.addAll(it) }
+        }
+    }
+
     private fun filterProducts(query: String) {
         filteredItems.clear()
         filteredItems.addAll(
             if (query.isEmpty()) {
-            productItems.filter { it.category.name == item }
-        } else {
-            productItems.filter { it.title.lowercase().trim().contains(query) }
-        })
+                productItems.filter { it.category.name == item }
+            } else {
+                productItems.filter { it.title.lowercase().trim().contains(query) }
+            })
         myAdapter.updateList(filteredItems.toList())
     }
 
@@ -100,6 +112,11 @@ class CategoryFragment : Fragment() {
                 override fun onSaveProduct(items: ProductsItem) {
                     viewModel.saveToFavorites(items)
                 }
+            }, onClickDelelteFromCategory = object : OnClickDeleteFromCategory {
+                override fun onClickDeleteFromCategory(item: ProductsItem) {
+                    viewModel.deleteFromFavorites(item.id)
+                }
+
             }
         )
         binding.categoryRV2.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -115,7 +132,12 @@ class CategoryFragment : Fragment() {
                     Loader.hideDialog()
                     productItems.clear()
                     resource.data?.let { products ->
-                        productItems.addAll(products)
+
+                        products.forEach { apiProduct ->
+                            val isFavorite = dbItems.any { it.id == apiProduct.id }
+                            apiProduct.isFavourite = if (isFavorite) 1 else 0
+                            productItems.add(apiProduct)
+                        }
                         filterProducts(binding.searchEditText.text.toString())
                     }
                 }

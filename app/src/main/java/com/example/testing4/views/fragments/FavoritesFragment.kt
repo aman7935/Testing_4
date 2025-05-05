@@ -65,7 +65,6 @@ class FavoritesFragment : Fragment() {
                 override fun onClickDelete(item: ProductItemsEntity) {
                     viewModel.deleteFromFavorites(item.id)
                 }
-
             }
         )
         binding.favouriteRV.adapter = myAdapter
