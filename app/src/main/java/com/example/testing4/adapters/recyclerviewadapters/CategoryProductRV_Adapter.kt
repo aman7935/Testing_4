@@ -9,15 +9,18 @@ import com.example.testing4.R
 import com.example.testing4.clicklisteners.OnClickDeleteFromCategory
 import com.example.testing4.clicklisteners.OnClickSave
 import com.example.testing4.clicklisteners.OnItemClickListenerDetails
+import com.example.testing4.clicklisteners.OnItemClickSaveInProductCart
 import com.example.testing4.databinding.CategoryProductIvBinding
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.utils.ViewUtils
+import com.example.testing4.views.auth.userId
 
 class CategoryProductRV_Adapter(
     private var itemList: List<ProductsItem>,
     private val onItemClickListenerForDetails: OnItemClickListenerDetails,
     private val onClickSave: OnClickSave,
-    private val onClickDelelteFromCategory: OnClickDeleteFromCategory
+    private val onClickDeleteFromCategory: OnClickDeleteFromCategory,
+    private val onItemClickSaveInProductCart: OnItemClickSaveInProductCart
 ) : RecyclerView.Adapter<CategoryProductRV_Adapter.ItemViewHolder>() {
 
     inner class ItemViewHolder(val binding: CategoryProductIvBinding) :
@@ -31,17 +34,20 @@ class CategoryProductRV_Adapter(
 
                 imageView2.setOnClickListener { onItemClickListenerForDetails.onClickForDetails(item.id) }
 
-                if (item.isFavourite == 1){
-                    ViewUtils.setIconColor(binding.likeButton, R.color.like_color, itemView.context)
+                // favorites
+                if (item.isFavourite == 1) ViewUtils.setIconColor(binding.likeButton, R.color.like_color, itemView.context)
+                else ViewUtils.setIconColor(binding.likeButton, R.color.default_icon_color, itemView.context)
+
+                if (item.inCart == 1){      // cart
+                    addToBagTv.text = "Added Already"
+                    addToBag.isEnabled = false
                 }
-                else{
-                    ViewUtils.setIconColor(binding.likeButton, R.color.default_icon_color, itemView.context)
-                }
+                else addToBagTv.text = "Add to Bag"
 
                 likeButton.setOnClickListener {
                     if (item.isFavourite == 1){
                         item.isFavourite = 0
-                        onClickDelelteFromCategory.onClickDeleteFromCategory(item)
+                        onClickDeleteFromCategory.onClickDeleteFromCategory(item, userId)
                         Toast.makeText(itemView.context, "Deleted from Favorites", Toast.LENGTH_SHORT)
                             .show()
                         ViewUtils.setIconColor(binding.likeButton, R.color.default_icon_color, itemView.context)
@@ -50,8 +56,15 @@ class CategoryProductRV_Adapter(
                         item.isFavourite = 1
                         ViewUtils.setIconColor(binding.likeButton, R.color.like_color, itemView.context)
                         onClickSave.onSaveProduct(item)
-                        Toast.makeText(itemView.context, "Saved to Favorites", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(itemView.context, "Saved to Favorites", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                addToBag.setOnClickListener {
+                    if (item.inCart == 0) {
+                        item.inCart = 1
+                        addToBagTv.text = "Added Already"
+                        onItemClickSaveInProductCart.onClickSaveInCart(userId , item)
+                        addToBag.isEnabled = false
                     }
                 }
             }

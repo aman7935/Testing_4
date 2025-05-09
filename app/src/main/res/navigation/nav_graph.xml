@@ -22,6 +22,12 @@
         <action
             android:id="@+id/action_homeFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_youFragment"
+            app:destination="@id/youFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
     </fragment>
 
     <!-- Category Fragment -->
@@ -43,6 +49,12 @@
         <action
             android:id="@+id/action_categoryFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_categoryFragment_to_youFragment"
+            app:destination="@id/youFragment" />
+        <action
+            android:id="@+id/action_categoryFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
 
     </fragment>
 
@@ -58,6 +70,12 @@
         <action
             android:id="@+id/action_favoritesFragment_to_categoryFragment"
             app:destination="@id/categoryFragment" />
+        <action
+            android:id="@+id/action_favoritesFragment_to_youFragment"
+            app:destination="@id/youFragment" />
+        <action
+            android:id="@+id/action_favoritesFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
@@ -73,5 +91,46 @@
         <argument
             android:name="id"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_detailsFragment_to_youFragment"
+            app:destination="@id/youFragment" />
+        <action
+            android:id="@+id/action_detailsFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/youFragment"
+        android:name="com.example.testing4.views.fragments.YouFragment"
+        android:label="fragment_you"
+        tools:layout="@layout/fragment_you" >
+        <action
+            android:id="@+id/action_youFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment" />
+        <action
+            android:id="@+id/action_youFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+        <action
+            android:id="@+id/action_youFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_youFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.testing4.views.fragments.CartFragment"
+        android:label="CartFragment" >
+        <action
+            android:id="@+id/action_cartFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
     </fragment>
 </navigation>

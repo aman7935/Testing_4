@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.testing4.R
 import com.example.testing4.adapters.viewpageradapters.DetailViewPagerAdapter
 import com.example.testing4.api.RetrofitInstance
 import com.example.testing4.database.DataBaseProvider
@@ -19,12 +21,12 @@ import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.models.resource.Result
 import com.example.testing4.repo.Repo
 import com.example.testing4.utils.Loader
+import com.example.testing4.utils.ViewUtils
 import com.example.testing4.viewmodels.ViewModel
 
 class DetailsFragment : Fragment() {
     private lateinit var binding: FragmentDetailsBinding
     private lateinit var viewModel: ViewModel
-    private lateinit var item: ProductsItem
     private var id: Int = -1
     private lateinit var myAdapter: DetailViewPagerAdapter
     private lateinit var db: Database
@@ -78,6 +80,8 @@ class DetailsFragment : Fragment() {
                         setUpViewPager(imageList)
                         binding.title.text = product.title
                         binding.productDesc.text = product.description
+                        if (product.isFavourite == 1)ViewUtils.setIconColor(binding.heartIcon, R.color.like_color, requireContext())
+                        else ViewUtils.setIconColor(binding.heartIcon, R.color.default_icon_color, requireContext())
                     }
                 }
                 Result.FAILURE -> {

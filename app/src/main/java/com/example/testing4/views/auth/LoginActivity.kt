@@ -15,9 +15,14 @@ import com.example.testing4.databinding.ActivityLoginBinding
 import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.views.activity.MainActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+
+
+private lateinit var currentUserId : FirebaseUser
+val userId : String get() = currentUserId.uid.toString()
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
@@ -49,6 +54,7 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     lifecycleScope.launch {
+                        currentUserId = auth.currentUser!!
                         dataStore.hasLoggedIn(true)
                         dataStore.getLoggedIn.first().let {
                             Log.d("logged in", "loginUser: $it")

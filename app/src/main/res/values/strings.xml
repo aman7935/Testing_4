@@ -25,4 +25,6 @@
     <string name="you">You</string>
     <string name="add_to_bag">Add to Bag</string>
     <string name="favorites">FAVORITES</string>
+    <string name="cart">CART</string>
+    <string name="_1">1</string>
 </resources>

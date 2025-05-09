@@ -1,22 +1,21 @@
 package com.example.testing4.viewmodels
 
 
-import android.app.Dialog
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.testing4.models.category.Category
 import com.example.testing4.repo.Repo
 import androidx.lifecycle.viewModelScope
+import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
 import com.example.testing4.models.product.Products
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.models.resource.Resource
+import com.example.testing4.views.auth.userId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class ViewModel(private val repo: Repo) : ViewModel() {
@@ -100,21 +99,62 @@ class ViewModel(private val repo: Repo) : ViewModel() {
     private val _favorites = MutableLiveData<Resource<List<ProductItemsEntity>>>()
     val favorites: LiveData<Resource<List<ProductItemsEntity>>> get() = _favorites
 
-    fun getAllFavorites() {
+    fun getAllFavorites(userId: String) {
         _favorites.postValue(Resource.loading(null, null))
 
-        val source = repo.getAllProducts()
+        val source = repo.getAllProducts(userId)
 
-        source.observeForever {  data ->
+        source.observeForever { data ->
             _favorites.postValue(Resource.success(data, "Favorites fetched successfully"))
         }
     }
 
-    fun deleteFromFavorites(productID: Int){
+    fun deleteFromFavorites(productID: Int, userId: String) {
         viewModelScope.launch {
-            repo.deleteProduct(productID)
+            repo.deleteProduct(productID, userId)
         }
     }
 
-    val savedProducts: LiveData<List<ProductItemsEntity>> = repo.getAllProducts()}
+    fun saveInCart(id: Int, productCart: ProductCart) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val products = ProductCart(
+                userId = userId,
+                pID = id,
+                products = productCart.products,
+                quantity = productCart.quantity
+            )
+            repo.saveInCart(products)
+        }
+    }
 
+
+    //cart
+    private val _cartItems = MutableLiveData<Resource<List<ProductCart>>>()
+    val cartItems: LiveData<Resource<List<ProductCart>>> get() = _cartItems
+
+    fun getAllCartItems(userId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _cartItems.postValue(Resource.loading(null, null))
+            val cartItemsList = repo.getAllCartItems(userId)
+            _cartItems.postValue(Resource.success(cartItemsList, "Cart items fetched successfully"))
+        }
+    }
+    fun deleteFromCart(pID: Int, userId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteFromCart(pID, userId)
+        }
+    }
+
+    fun incrementQuantity(pID: Int, userId: String) {
+        viewModelScope.launch {
+            repo.incrementQuantity(pID, userId)
+        }
+    }
+
+    fun decrementQuantity(pID: Int, userId: String) {
+        viewModelScope.launch {
+            repo.decrementQuantity(pID, userId)
+        }
+    }
+
+}

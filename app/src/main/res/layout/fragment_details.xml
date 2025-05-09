@@ -96,6 +96,7 @@
                 android:textColor="@color/purple_color" />
 
             <ImageView
+                android:id="@+id/heartIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/heart_icon_civ" />

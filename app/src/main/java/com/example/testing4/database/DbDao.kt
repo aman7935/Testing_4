@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
 
 
@@ -15,12 +16,28 @@ interface DbDao {
     suspend fun insert(dbTable: ProductItemsEntity)
 
 
-    @Query("SELECT * FROM ProductItemsEntity")
-    fun getAllProducts(): LiveData<List<ProductItemsEntity>>
+    @Query("SELECT * FROM ProductItemsEntity WHERE userId = :userId")
+    fun getAllProducts(userId: String): LiveData<List<ProductItemsEntity>>
 
-        /*used live data because it automatically updates
-        products from db when there is any change in database*/
 
-    @Query("DELETE FROM ProductItemsEntity WHERE id = :productID")
-    suspend fun deleteProduct(productID: Int)
+    @Query("DELETE FROM ProductItemsEntity WHERE id = :productID AND userId = :userId")
+    suspend fun deleteProduct(productID: Int, userId: String)
+
+
+
+    //another table for cart products
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCart(productCart: ProductCart)
+
+    @Query("SELECT * FROM ProductCart WHERE userId = :userId")
+    fun getAllCartItems(userId: String): List<ProductCart>
+
+    @Query("DELETE FROM ProductCart WHERE pID = :productID AND userId = :userId")
+    suspend fun deleteCartItem(productID: Int, userId: String)
+
+    @Query("UPDATE ProductCart SET quantity = quantity + 1 WHERE pID = :productID AND userId = :userId")
+    suspend fun incrementQuantity(productID: Int, userId: String)
+
+    @Query("UPDATE ProductCart SET quantity = quantity - 1 WHERE pID = :productID AND userId = :userId")
+    suspend fun decrementQuantity(productID: Int, userId: String)
 }

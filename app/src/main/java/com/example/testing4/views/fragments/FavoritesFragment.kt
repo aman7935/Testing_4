@@ -20,6 +20,7 @@ import com.example.testing4.models.resource.Result
 import com.example.testing4.repo.Repo
 import com.example.testing4.utils.Loader
 import com.example.testing4.viewmodels.ViewModel
+import com.example.testing4.views.auth.userId
 
 class FavoritesFragment : Fragment() {
     private lateinit var binding: FragmentFavoritesBinding
@@ -48,7 +49,7 @@ class FavoritesFragment : Fragment() {
 
         observeData()
         setUpRecyclerView()
-        viewModel.getAllFavorites()
+        viewModel.getAllFavorites(userId)
     }
 
     private fun setUpRecyclerView() {
@@ -63,7 +64,7 @@ class FavoritesFragment : Fragment() {
             },
             onItemClickDelete = object : OnItemClickDelete{
                 override fun onClickDelete(item: ProductItemsEntity) {
-                    viewModel.deleteFromFavorites(item.id)
+                    viewModel.deleteFromFavorites(item.id, userId)
                 }
             }
         )

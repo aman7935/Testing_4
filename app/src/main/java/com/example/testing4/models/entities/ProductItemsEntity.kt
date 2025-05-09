@@ -10,5 +10,6 @@ data class ProductItemsEntity (
     val id : Int = 0,
     val title : String,
     val price : Int,
-    val image : String
+    val image : String,
+    val userId : String
 )

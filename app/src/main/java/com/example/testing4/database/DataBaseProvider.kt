@@ -21,6 +21,19 @@ object DataBaseProvider {
         }
     }
 
+    /*val migration = object : Migration(1, 2){      // adding userId column to ProductItemsEntity table
+        override fun migrate(db: SupportSQLiteDatabase) {
+            super.migrate(db)
+            db.execSQL("ALTER TABLE ProductItemsEntity ADD COLUMN userId INTEGER DEFAULT 0 NOT NULL")
+        }
+    }
+    val migration2_3 = object : Migration(2, 3){
+        override fun migrate(db: SupportSQLiteDatabase) {
+            super.migrate(db)
+            db.execSQL("ALTER TABLE ProductCart ADD COLUMN id INTEGER DEFAULT 0 NOT NULL")
+        }
+    }*/
+
     /*val migration = object : Migration(1, 2) {
         override fun migrate(db: SupportSQLiteDatabase) {
             super.migrate(db)
