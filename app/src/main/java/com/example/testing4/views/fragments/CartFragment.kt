@@ -49,6 +49,31 @@ class CartFragment : Fragment() {
         setUpRecyclerView()
         viewModel.getAllCartItems(userId)
         observeData()
+
+    }
+
+    private fun calculateBillDetails(){
+        var itemTotal = 0.0
+        var gstRate = 0.5
+        val delivery = .50
+
+        cartItems.forEach {
+            var price = it.price?.toDouble() ?: 0.0
+            var quantity = it.quantity ?: 1
+            itemTotal += price * quantity
+        }
+        val gstAmount = itemTotal * gstRate
+
+        val deliveryCharges  = if (itemTotal >= 300) 0.0 else delivery
+
+        val totalAmount = itemTotal + gstAmount + deliveryCharges
+
+        binding.apply {
+            amount.text = itemTotal.toString()
+            gstTv.text = gstAmount.toString()
+            totalPriceTv.text = totalAmount.toString()
+            deliveyTv.text = if (deliveryCharges == 0.0) "Free" else "Free above shopping of 300"
+        }
     }
 
     private fun setUpRecyclerView() {
@@ -67,7 +92,9 @@ class CartFragment : Fragment() {
                     override fun onClickDecrement(itemID: ProductsItem) {
                         viewModel.decrementQuantity(itemID.id, userId)
                     }
-                })
+                },
+                calculateBillDetails = { calculateBillDetails() }
+            )
 
 
         binding.cartRV.adapter = cartRvAdapter

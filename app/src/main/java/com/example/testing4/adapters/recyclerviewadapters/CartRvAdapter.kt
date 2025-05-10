@@ -17,7 +17,8 @@ class CartRvAdapter(
     private var cartItemList: ArrayList<ProductsItem>,
     private val onItemClickDeleteCart: OnItemClickDeleteCart,
     private val onClickIncrement: OnClickIncrement,
-    private val onClickDecrement: OnClickDecrement
+    private val onClickDecrement: OnClickDecrement,
+    private val calculateBillDetails : () -> Unit
 ) : RecyclerView.Adapter<CartRvAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,6 +35,7 @@ class CartRvAdapter(
     fun updateList(newList: ArrayList<ProductsItem>) {
         cartItemList = newList
         notifyDataSetChanged()
+        calculateBillDetails()
     }
 
     inner class ViewHolder(val binding: CartItemIvBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -50,6 +52,7 @@ class CartRvAdapter(
                     onItemClickDeleteCart.onclickDelete(item)
                     cartItemList.removeAt(position)
                     notifyItemRemoved(position)
+                    calculateBillDetails()
                 }
 
                 increment.setOnClickListener {
@@ -58,6 +61,7 @@ class CartRvAdapter(
                         item.quantity += 1
                         number.text=item.quantity.toString()
                         decrement.isEnabled = true
+                        calculateBillDetails()
                     }
                 }
                 decrement.setOnClickListener {
@@ -66,6 +70,7 @@ class CartRvAdapter(
                         onClickDecrement.onClickDecrement(item)
                         item.quantity -= 1
                         number.text=item.quantity.toString()
+                        calculateBillDetails()
                     }
                     else if(item.quantity == 1){
                         decrement.isEnabled = false
