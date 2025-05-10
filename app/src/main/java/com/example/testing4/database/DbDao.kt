@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
+import com.example.testing4.models.entities.UserAddress
 
 
 @Dao
@@ -15,17 +16,14 @@ interface DbDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(dbTable: ProductItemsEntity)
 
-
     @Query("SELECT * FROM ProductItemsEntity WHERE userId = :userId")
     fun getAllProducts(userId: String): LiveData<List<ProductItemsEntity>>
-
 
     @Query("DELETE FROM ProductItemsEntity WHERE id = :productID AND userId = :userId")
     suspend fun deleteProduct(productID: Int, userId: String)
 
 
-
-    //another table for cart products
+    // table for cart products
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCart(productCart: ProductCart)
 
@@ -40,4 +38,11 @@ interface DbDao {
 
     @Query("UPDATE ProductCart SET quantity = quantity - 1 WHERE pID = :productID AND userId = :userId")
     suspend fun decrementQuantity(productID: Int, userId: String)
+
+
+    // table for user address
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAddress(userAddress: UserAddress)
+
 }
