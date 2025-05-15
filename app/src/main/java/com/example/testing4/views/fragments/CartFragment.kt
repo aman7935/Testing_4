@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.testing4.R
 import com.example.testing4.adapters.recyclerviewadapters.CartRvAdapter
 import com.example.testing4.api.RetrofitInstance
 import com.example.testing4.clicklisteners.OnClickDecrement
@@ -32,8 +30,7 @@ class CartFragment : Fragment() {
     private lateinit var repo: Repo
     private lateinit var db: Database
     private lateinit var cartRvAdapter: CartRvAdapter
-
-    var cartItems= ArrayList<ProductsItem>()
+    private  var cartItems= ArrayList<ProductsItem>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -52,35 +49,6 @@ class CartFragment : Fragment() {
         setUpRecyclerView()
         viewModel.getAllCartItems(userId)
         observeData()
-
-        binding.change.setOnClickListener {
-            findNavController().navigate(R.id.addressFragment)
-        }
-    }
-
-    private fun calculateBillDetails(){
-        var itemTotal = 0.0
-        var gstRate = 0.05
-        val delivery = .50
-
-        cartItems.forEach {
-            var price = it.price?.toDouble() ?: 0.0
-            var quantity = it.quantity ?: 1
-            itemTotal += price * quantity
-        }
-        val gstAmount = (itemTotal * gstRate).toFloat()
-
-        val deliveryCharges  = if (itemTotal >= 300) 0.0 else delivery
-
-        val totalAmount = (itemTotal + gstAmount + deliveryCharges).toFloat()
-
-        binding.apply {
-            amount.text = itemTotal.toString()
-            gstTv.text = gstAmount.toString()
-            totalPriceTv.text = totalAmount.toString()
-            deliveyTv.text = if (deliveryCharges == 0.0) "Free" else "Free above shopping of 300"
-            billAmount.text = totalAmount.toString()
-        }
     }
 
     private fun setUpRecyclerView() {
@@ -99,9 +67,7 @@ class CartFragment : Fragment() {
                     override fun onClickDecrement(itemID: ProductsItem) {
                         viewModel.decrementQuantity(itemID.id, userId)
                     }
-                },
-                calculateBillDetails = { calculateBillDetails() }
-            )
+                })
 
 
         binding.cartRV.adapter = cartRvAdapter
@@ -110,9 +76,6 @@ class CartFragment : Fragment() {
     }
 
     private fun observeData() {
-
-
-
         viewModel.cartItems.observe(viewLifecycleOwner) { productCartList ->
             val cartProducts = productCartList.data ?: emptyList()
             cartItems = ArrayList(cartProducts.map {
