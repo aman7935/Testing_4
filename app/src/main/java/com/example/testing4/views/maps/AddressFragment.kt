@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -85,7 +84,6 @@ class AddressFragment : Fragment() {
     private fun getCurrentLocation() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                Log.d("TAG", "getCurrentLocation: $location")
                 if (location != null) {
                     val intent = Intent(requireContext(), MapActivity::class.java).apply {
                         putExtra("latitude", location.latitude)
