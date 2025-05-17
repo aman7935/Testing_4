@@ -9,6 +9,7 @@ import com.example.testing4.repo.Repo
 import androidx.lifecycle.viewModelScope
 import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
+import com.example.testing4.models.entities.UserAddress
 import com.example.testing4.models.product.Products
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.models.resource.Resource
@@ -139,6 +140,7 @@ class ViewModel(private val repo: Repo) : ViewModel() {
             _cartItems.postValue(Resource.success(cartItemsList, "Cart items fetched successfully"))
         }
     }
+
     fun deleteFromCart(pID: Int, userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteFromCart(pID, userId)
@@ -157,4 +159,13 @@ class ViewModel(private val repo: Repo) : ViewModel() {
         }
     }
 
+    //userAddresses
+                                              //(callbacks)app stays smooth and knows when the job is done without wasting time.
+    fun saveAddress(userAddress: UserAddress, onResult : (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val saved = repo.saveLocationIfNotExists(userAddress)
+            onResult(saved)
+        }   
+
+    }
 }

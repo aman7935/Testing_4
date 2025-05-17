@@ -45,4 +45,7 @@ interface DbDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAddress(userAddress: UserAddress)
 
+    @Query("SELECT * FROM UserAddress WHERE userId = :userId AND address = :address")
+    suspend fun getAddressByUserIdAndAddress(userId: String, address: String): UserAddress?
+
 }

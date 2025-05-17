@@ -6,6 +6,7 @@ import com.example.testing4.database.DbDao
 import com.example.testing4.models.category.Category
 import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
+import com.example.testing4.models.entities.UserAddress
 import com.example.testing4.models.product.Products
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.utils.toEntity
@@ -49,5 +50,13 @@ class Repo(private val vybeShopApi: VybeShopApi, private val dbDao: DbDao) {
         return dbDao.decrementQuantity(pID,  userId)
     }
 
+    //userAddress
+
+    suspend fun saveLocationIfNotExists(location: UserAddress): Boolean {
+        val existing = dbDao.getAddressByUserIdAndAddress(location.userId, location.address)
+        return if (existing == null) { dbDao.insertAddress(location)
+            true
+        } else false
+    }
 
 }
