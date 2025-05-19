@@ -59,7 +59,7 @@ class AddressFragment : Fragment() {
     ): View {
         binding = FragmentAddressBinding.inflate(inflater, container, false)
 
-        val dbDao: DbDao = DataBaseProvider.getInstance(requireContext()).dbDao
+        val dbDao = DataBaseProvider.getInstance(requireContext()).dbDao
         val repo = Repo(RetrofitInstance.retroFitApi, dbDao)
         viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
 

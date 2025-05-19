@@ -27,7 +27,7 @@
                 android:layout_height="56dp"
                 android:gravity="center_vertical"
                 android:paddingStart="16dp"
-                android:text="@string/cart"
+                android:text="Addresses"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"

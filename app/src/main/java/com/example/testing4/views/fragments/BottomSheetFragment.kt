@@ -69,18 +69,28 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             val apartmentOrHouseNo = binding.home.text.toString()
             val streetDetails = binding.streetDetails.text.toString()
             val landmark = binding.landmark.text.toString()
+            val pincode = binding.pincodeDetails.text.toString()
+            val name = binding.nameDetails.text.toString()
 
             if (selectedText == null) {
-                Toast.makeText(requireContext(), "Please select address type", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please select address type", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
-            if (latLng.latitude == 0.0 && latLng.longitude == 0.0) {
-                Toast.makeText(requireContext(), "Invalid location coordinates", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            if (apartmentOrHouseNo.isNotEmpty() && pincode.isNotEmpty()) {
+                val userAddress = UserAddress(
+                    userId = userId,
+                    name = name,
+                    address = address,
+                    pinCode = pincode.toInt(),
+                    addressType = selectedText!!,
+                    apartmentOrHouseNo = apartmentOrHouseNo,
+                    streetDetails = streetDetails,
+                    landmark = landmark,
+                )
+                viewModel.saveAddress(userAddress)
             }
-
-            val userAddress =
         }
     }
 }

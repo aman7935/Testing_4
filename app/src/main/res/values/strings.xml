@@ -36,7 +36,7 @@
     <string name="other">other</string>
     <string name="enter_house_no">Enter house no</string>
     <string name="enter_pincode">Enter Pincode</string>
-    <string name="pincode">Pincode</string>
+    <string name="pincode">Pincode *</string>
     <string name="landmark">Landmark</string>
     <string name="enter_a_nearby_landmark">Enter a nearby landmark</string>
 </resources>

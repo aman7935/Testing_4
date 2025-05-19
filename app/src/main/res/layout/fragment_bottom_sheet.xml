@@ -289,9 +289,6 @@
 
     </LinearLayout>
 
-
-
-
     <Button
         android:id="@+id/saveAddressButton"
         android:layout_width="match_parent"
