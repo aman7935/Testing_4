@@ -53,10 +53,17 @@ class Repo(private val vybeShopApi: VybeShopApi, private val dbDao: DbDao) {
     //userAddress
 
     suspend fun saveLocationIfNotExists(location: UserAddress): Boolean {
-        val existing = dbDao.getAddressByUserIdAndAddress(location.userId, location.address)
-        return if (existing == null) { dbDao.insertAddress(location)
-            true
-        } else false
+        val existing = dbDao.countAddressesByUserIdAndLocation(location.userId, location.latitude, location.longitude)
+        if (existing == 0) {
+            dbDao.insertAddress(location)
+            return true
+        }
+        return false
     }
+
+    suspend fun getAllAddressesByUserId(userId: String): List<UserAddress> {
+        return dbDao.getAllAddressesByUserId(userId)
+    }
+
 
 }

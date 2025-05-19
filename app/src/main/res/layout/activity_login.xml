@@ -135,7 +135,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
         
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!--<androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
@@ -165,7 +165,7 @@
                 app:layout_constraintTop_toTopOf="@id/edtEmail"
                 app:layout_constraintBottom_toTopOf="@id/edtEmail"
                 />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         <RelativeLayout
             android:id="@+id/l3"

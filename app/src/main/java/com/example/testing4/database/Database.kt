@@ -12,8 +12,7 @@ import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
 import com.example.testing4.models.entities.UserAddress
 
-
-@Database(entities = [ProductItemsEntity::class, ProductCart::class, UserAddress::class], version = 14)
+@Database(entities = [ProductItemsEntity::class, ProductCart::class, UserAddress::class], version = 16)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase(){
     abstract val  dbDao : DbDao

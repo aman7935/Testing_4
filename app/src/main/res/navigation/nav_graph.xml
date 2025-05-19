@@ -143,5 +143,8 @@
         <action
             android:id="@+id/action_addressFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_addressFragment_to_cartFragment2"
+            app:destination="@id/cartFragment" />
     </fragment>
 </navigation>

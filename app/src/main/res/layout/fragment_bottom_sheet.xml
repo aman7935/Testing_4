@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_top_corners">
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/location_icon" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Delivering to" />
+
+            <TextView
+                android:id="@+id/localtion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ludhiana"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dotted_line"
+        android:layout_width="match_parent"
+        android:layout_height="1.5dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="5dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/dotted_divider"
+        app:layout_constraintTop_toBottomOf="@id/layout1" />
+
+    <TextView
+        android:id="@+id/addressType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/address_type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dotted_line" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/addressType">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/homeBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:text="Home"
+            app:buttonTint="@color/mainColor" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/officeBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_gravity=""
+            android:layout_weight="1"
+            android:text="@string/office"
+            app:buttonTint="@color/mainColor" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/otherBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:text="@string/other"
+            app:buttonTint="@color/mainColor" />
+    </RadioGroup>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radioGroup">
+
+        <EditText
+            android:id="@+id/nameDetails"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/item_background1"
+            android:hint="name"
+            android:paddingHorizontal="10dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
+            android:background="@color/white"
+            android:paddingHorizontal="3dp"
+            android:text="Enter your name"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/nameDetails"
+            app:layout_constraintStart_toStartOf="@+id/nameDetails"
+            app:layout_constraintTop_toTopOf="@id/nameDetails" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/homeDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name">
+
+        <EditText
+            android:id="@+id/home"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/item_background1"
+            android:hint="@string/enter_house_no"
+            android:paddingHorizontal="10dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
+            android:background="@color/white"
+            android:paddingHorizontal="3dp"
+            android:text="@string/apartment_house_no"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/home"
+            app:layout_constraintStart_toStartOf="@+id/home"
+            app:layout_constraintTop_toTopOf="@id/home" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/street"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/homeDetails">
+
+        <EditText
+            android:id="@+id/streetDetails"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/item_background1"
+            android:hint="@string/enter_street_details"
+            android:paddingHorizontal="10dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
+            android:background="@color/white"
+            android:paddingHorizontal="3dp"
+            android:text="@string/street_details"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/streetDetails"
+            app:layout_constraintStart_toStartOf="@+id/streetDetails"
+            app:layout_constraintTop_toTopOf="@id/streetDetails" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearlayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/street">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/landmarkDetails"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/landmark"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/item_background1"
+                android:hint="@string/enter_a_nearby_landmark"
+                android:paddingHorizontal="10dp"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:background="@color/white"
+                android:paddingHorizontal="3dp"
+                android:text="@string/landmark"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@id/landmark"
+                app:layout_constraintStart_toStartOf="@+id/landmark"
+                app:layout_constraintTop_toTopOf="@id/landmark" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/pincode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/pincodeDetails"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/item_background1"
+                android:hint="@string/enter_pincode"
+                android:paddingHorizontal="10dp"
+                android:textSize="12sp"
+                android:inputType="number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:background="@color/white"
+                android:paddingHorizontal="3dp"
+                android:text="@string/pincode"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@id/pincodeDetails"
+                app:layout_constraintStart_toStartOf="@+id/pincodeDetails"
+                app:layout_constraintTop_toTopOf="@id/pincodeDetails" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+
+
+
+    <Button
+        android:id="@+id/saveAddressButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="7dp"
+        android:backgroundTint="@color/mainColor"
+        android:text="Save Address"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearlayout4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

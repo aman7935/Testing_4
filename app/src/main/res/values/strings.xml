@@ -28,4 +28,15 @@
     <string name="cart">CART</string>
     <string name="_1">1</string>
     <string name="bill_details">Bill Details</string>
+    <string name="street_details">Street Details</string>
+    <string name="enter_street_details">Enter street details</string>
+    <string name="apartment_house_no">Apartment/House no.*</string>
+    <string name="address_type">Address type</string>
+    <string name="office">office</string>
+    <string name="other">other</string>
+    <string name="enter_house_no">Enter house no</string>
+    <string name="enter_pincode">Enter Pincode</string>
+    <string name="pincode">Pincode</string>
+    <string name="landmark">Landmark</string>
+    <string name="enter_a_nearby_landmark">Enter a nearby landmark</string>
 </resources>

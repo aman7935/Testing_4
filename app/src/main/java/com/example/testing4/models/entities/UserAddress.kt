@@ -9,5 +9,8 @@ data class UserAddress(
     val userId: String,
     val latitude: Double,
     val longitude: Double,
-    val address: String,
+    val addressType: String,
+    val apartmentOrHouseNo : String,
+    val streetDetails : String,
+    val landmark : String
 )

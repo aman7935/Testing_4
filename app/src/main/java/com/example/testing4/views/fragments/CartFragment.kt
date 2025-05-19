@@ -52,10 +52,12 @@ class CartFragment : Fragment() {
         setUpRecyclerView()
         viewModel.getAllCartItems(userId)
         observeData()
+        val address = arguments?.getString("address")
 
         binding.change.setOnClickListener {
             findNavController().navigate(R.id.addressFragment)
         }
+        binding.address.text = address
     }
 
     private fun calculateBillDetails(){

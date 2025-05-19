@@ -23,6 +23,7 @@ import com.example.testing4.models.entities.UserAddress
 import com.example.testing4.repo.Repo
 import com.example.testing4.viewmodels.ViewModel
 import com.example.testing4.views.auth.userId
+import com.example.testing4.views.fragments.BottomSheetFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,6 +34,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapBinding
     private lateinit var googleMap: GoogleMap
     private lateinit var viewModel: ViewModel
+    private lateinit var  address : String
+    private lateinit var city : String
+    private lateinit var state : String
+    private lateinit var latLng : LatLng
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,21 +53,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         binding.saveButton.setOnClickListener {
-            val center = googleMap.cameraPosition.target
-            val address = binding.addressText.text.toString()
-
-            val userAddress = UserAddress(
-                userId = userId,
-                latitude = center.latitude,
-                longitude = center.longitude,
-                address = address
-            )
-
-            viewModel.saveAddress(userAddress) { saved ->
-                if (saved) Toast.makeText(this, "Address saved successfully", Toast.LENGTH_SHORT).show()
-                else Toast.makeText(this, "Address already exists", Toast.LENGTH_SHORT).show()
-                finish()
+            val bundle = Bundle().apply {
+                putString("city", city,)
+                putString("state", state)
+                putString("address", address)
+                putParcelable("latLng", latLng)
             }
+            val bottomSheetFragment = BottomSheetFragment()
+            bottomSheetFragment.arguments = bundle
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
         }
     }
 
@@ -82,7 +82,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun fetchAddress(location: LatLng) {
         lifecycleScope.launch {
-            val address = withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 try {
                     val geocoder = Geocoder(this@MapActivity, Locale.getDefault())
                     val addressList = geocoder.getFromLocation(
@@ -90,12 +90,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         location.longitude,
                         1
                     )
-                    addressList?.firstOrNull()?.getAddressLine(0) ?: "Address not found"
+                    val addressObj = addressList?.firstOrNull()
+                    city = addressObj?.locality ?: "City not found"
+                    state = addressObj?.adminArea ?: "State not found"
+                    address = addressObj?.getAddressLine(0) ?: "Address not found"
+                    latLng = location
+
                 } catch (e: Exception) {
-                    "Unable to find the address"
+                    Toast.makeText(this@MapActivity, "Error fetching address: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
             binding.addressText.text = address
         }
     }
+
 }
