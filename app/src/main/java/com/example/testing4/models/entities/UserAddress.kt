@@ -14,5 +14,6 @@ data class UserAddress(
     val addressType: String,
     val apartmentOrHouseNo : String,
     val streetDetails : String,
-    val landmark : String
+    val landmark : String,
+    val defaultAddress: Int = 0
 )

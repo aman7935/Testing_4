@@ -39,4 +39,6 @@
     <string name="pincode">Pincode *</string>
     <string name="landmark">Landmark</string>
     <string name="enter_a_nearby_landmark">Enter a nearby landmark</string>
+    <string name="make_this_address_default">make this address default</string>
+    <string name="save_address">Save Address</string>
 </resources>

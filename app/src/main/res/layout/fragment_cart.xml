@@ -212,8 +212,8 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/change"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
                     android:text="Change"
                     android:backgroundTint="@color/white"
                     android:textColor="#FF5722"

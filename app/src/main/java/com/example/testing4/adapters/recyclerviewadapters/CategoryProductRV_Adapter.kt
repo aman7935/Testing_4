@@ -13,10 +13,10 @@ import com.example.testing4.clicklisteners.OnItemClickSaveInProductCart
 import com.example.testing4.databinding.CategoryProductIvBinding
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.utils.ViewUtils
-import com.example.testing4.views.auth.userId
 
 class CategoryProductRV_Adapter(
     private var itemList: List<ProductsItem>,
+    private val userId: String,
     private val onItemClickListenerForDetails: OnItemClickListenerDetails,
     private val onClickSave: OnClickSave,
     private val onClickDeleteFromCategory: OnClickDeleteFromCategory,
@@ -47,7 +47,7 @@ class CategoryProductRV_Adapter(
                 likeButton.setOnClickListener {
                     if (item.isFavourite == 1){
                         item.isFavourite = 0
-                        onClickDeleteFromCategory.onClickDeleteFromCategory(item, userId)
+                        onClickDeleteFromCategory.onClickDeleteFromCategory(item)
                         Toast.makeText(itemView.context, "Deleted from Favorites", Toast.LENGTH_SHORT)
                             .show()
                         ViewUtils.setIconColor(binding.likeButton, R.color.default_icon_color, itemView.context)
@@ -63,7 +63,7 @@ class CategoryProductRV_Adapter(
                     if (item.inCart == 0) {
                         item.inCart = 1
                         addToBagTv.text = "Added Already"
-                        onItemClickSaveInProductCart.onClickSaveInCart(userId , item)
+                        onItemClickSaveInProductCart.onClickSaveInCart(item)
                         addToBag.isEnabled = false
                     }
                 }

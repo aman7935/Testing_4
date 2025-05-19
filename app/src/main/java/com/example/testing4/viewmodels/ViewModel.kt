@@ -7,19 +7,20 @@ import androidx.lifecycle.ViewModel
 import com.example.testing4.models.category.Category
 import com.example.testing4.repo.Repo
 import androidx.lifecycle.viewModelScope
+import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
 import com.example.testing4.models.entities.UserAddress
 import com.example.testing4.models.product.Products
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.models.resource.Resource
-import com.example.testing4.views.auth.userId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-class ViewModel(private val repo: Repo) : ViewModel() {
+class ViewModel(private val repo: Repo, private val dataStore: DataStoreManager) : ViewModel() {
+
     private val _category = MutableLiveData<Resource<Category>>()
     val category: LiveData<Resource<Category>> get() = _category
 
@@ -92,7 +93,7 @@ class ViewModel(private val repo: Repo) : ViewModel() {
 
     fun saveToFavorites(product: ProductsItem) {
         viewModelScope.launch {
-            repo.insertProduct(product)
+            repo.insertProduct(product, dataStore)
         }
     }
 
@@ -118,13 +119,7 @@ class ViewModel(private val repo: Repo) : ViewModel() {
 
     fun saveInCart(id: Int, productCart: ProductCart) {
         viewModelScope.launch(Dispatchers.IO) {
-            val products = ProductCart(
-                userId = userId,
-                pID = id,
-                products = productCart.products,
-                quantity = productCart.quantity
-            )
-            repo.saveInCart(products)
+            repo.saveInCart(productCart)
         }
     }
 
@@ -143,9 +138,17 @@ class ViewModel(private val repo: Repo) : ViewModel() {
 
     fun deleteFromCart(pID: Int, userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteFromCart(pID, userId)
+            _cartItems.postValue(Resource.loading(null, null))
+            val isDeleted = repo.deleteFromCart(pID, userId)
+            if (isDeleted) {
+                val updatedCart = repo.getAllCartItems(userId)
+                _cartItems.postValue(Resource.success(updatedCart, "Item deleted"))
+            } else {
+                _cartItems.postValue(Resource.failure(null, "Item not deleted"))
+            }
         }
     }
+
 
     fun incrementQuantity(pID: Int, userId: String) {
         viewModelScope.launch {
@@ -167,10 +170,23 @@ class ViewModel(private val repo: Repo) : ViewModel() {
         }
     }
 
-    fun getAllAddresses(userId: String, onResult: (List<UserAddress>) -> Unit) {
+    fun getAllAddressesByUserId(userId: String, onResult: (List<UserAddress>) -> Unit) {
         viewModelScope.launch {
             val addresses = repo.getAllAddressesByUserId(userId)
             onResult(addresses)
+        }
+    }
+
+    fun resetDefaultAddress(userId: String) {
+        viewModelScope.launch {
+            repo.resetDefaultAddress(userId)
+        }
+    }
+
+    fun getDefaultAddressByUserId(userId: String, onResult: (UserAddress?) -> Unit) {
+        viewModelScope.launch {
+            val defaultAddress = repo.getDefaultAddressByUserId(userId)
+            onResult(defaultAddress)
         }
     }
 }

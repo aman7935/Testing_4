@@ -60,8 +60,6 @@ class CartRvAdapter(
 
                 deleteBTN.setOnClickListener {
                     onItemClickDeleteCart.onclickDelete(item)
-                    cartItemList.removeAt(position)
-                    notifyItemRemoved(position)
                     calculateBillDetails()
                 }
 

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testing4.R
@@ -22,14 +23,15 @@ import com.example.testing4.adapters.recyclerviewadapters.AddressAdapter
 import com.example.testing4.api.RetrofitInstance
 import com.example.testing4.clicklisteners.OnClickListenerForAddress
 import com.example.testing4.database.DataBaseProvider
-import com.example.testing4.database.DbDao
 import com.example.testing4.databinding.FragmentAddressBinding
+import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.factory.Factory
 import com.example.testing4.models.entities.UserAddress
 import com.example.testing4.repo.Repo
 import com.example.testing4.viewmodels.ViewModel
-import com.example.testing4.views.auth.userId
 import com.google.android.gms.location.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class AddressFragment : Fragment() {
@@ -40,7 +42,9 @@ class AddressFragment : Fragment() {
     private lateinit var geoCoder: Geocoder
     private lateinit var addressAdapter: AddressAdapter
     private lateinit var viewModel: ViewModel
-    private lateinit var address : String
+    private lateinit var address: String
+    private lateinit var  dataStore : DataStoreManager
+    private lateinit var  userID : String
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -61,7 +65,8 @@ class AddressFragment : Fragment() {
 
         val dbDao = DataBaseProvider.getInstance(requireContext()).dbDao
         val repo = Repo(RetrofitInstance.retroFitApi, dbDao)
-        viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
+        dataStore = DataStoreManager(requireContext())
+        viewModel = ViewModelProvider(this, Factory(repo, dataStore))[ViewModel::class.java]
 
         return binding.root
     }
@@ -69,11 +74,11 @@ class AddressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
         geoCoder = Geocoder(requireContext(), Locale.getDefault())
 
         binding.addbtn.setOnClickListener {
-
             checkLocationAndPermission()
         }
 
@@ -86,6 +91,10 @@ class AddressFragment : Fragment() {
         binding.addressRV.layoutManager = LinearLayoutManager(requireContext())
         binding.addressRV.adapter = addressAdapter
 
+
+        lifecycleScope.launch {
+            userID = dataStore.getUserId.first()
+        }
         getAllAddresses()
 
         binding.saveBtn.setOnClickListener {
@@ -97,7 +106,7 @@ class AddressFragment : Fragment() {
     }
 
     private fun getAllAddresses() {
-        viewModel.getAllAddresses(userId) { addressList ->
+        viewModel.getAllAddressesByUserId(userID) { addressList ->
             // Update adapter data and refresh RecyclerView when new data arrives
             addressAdapter.updateList(addressList)
         }
@@ -164,7 +173,8 @@ class AddressFragment : Fragment() {
                     }
                     startActivity(intent)
                 } else {
-                    Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT)
+                        .show()
                 }
                 // Used to manually stop location updates once you’ve received the needed result. (DEFENSIVE PROGRAMMING PRACTICE)
                 fusedLocationProviderClient.removeLocationUpdates(this)
@@ -186,7 +196,8 @@ class AddressFragment : Fragment() {
                     UI must be updated from the main thread */
             )
         } else {
-            Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

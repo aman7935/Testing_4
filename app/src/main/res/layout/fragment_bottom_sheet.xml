@@ -34,7 +34,7 @@
                 android:text="Delivering to" />
 
             <TextView
-                android:id="@+id/localtion"
+                android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ludhiana"
@@ -289,18 +289,29 @@
 
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/make_this_address_default"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearlayout4" />
+
     <Button
         android:id="@+id/saveAddressButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="7dp"
         android:backgroundTint="@color/mainColor"
-        android:text="Save Address"
+        android:text="@string/save_address"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearlayout4" />
+        app:layout_constraintTop_toBottomOf="@id/checkBox" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

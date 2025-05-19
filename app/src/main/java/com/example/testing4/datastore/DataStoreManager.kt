@@ -19,7 +19,7 @@ class DataStoreManager(private val context: Context) {
         private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
         private val USER_NAME = stringPreferencesKey("user_name")
         private val LOGGED_IN = booleanPreferencesKey("logged_in")
-        private val favouriteItemId = intPreferencesKey("id")
+        private val USER_ID = stringPreferencesKey("user_id")
     }
 
     suspend fun saveOnboardingComplete(completed: Boolean) {
@@ -54,5 +54,16 @@ class DataStoreManager(private val context: Context) {
         .map { pref ->
             pref[LOGGED_IN] ?: false
         }
+
+    suspend fun saveUserId(userId: String) {
+        context.dataStore.edit { pref ->
+            pref[USER_ID] = userId
+        }
+    }
+    val getUserId: Flow<String> = context.dataStore.data
+        .map { pref ->
+            pref[USER_ID] ?: ""
+        }
+
 
 }

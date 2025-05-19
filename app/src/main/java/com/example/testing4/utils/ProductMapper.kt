@@ -2,9 +2,8 @@ package com.example.testing4.utils
 
 import com.example.testing4.models.entities.ProductItemsEntity
 import com.example.testing4.models.product.ProductsItem
-import com.example.testing4.views.auth.userId
 
-fun ProductsItem.toEntity(): ProductItemsEntity {
+fun ProductsItem.toEntity(userId: String): ProductItemsEntity {
     return ProductItemsEntity(
         id = this.id,
         title = this.title,
@@ -13,3 +12,4 @@ fun ProductsItem.toEntity(): ProductItemsEntity {
         userId = userId
     )
 }
+

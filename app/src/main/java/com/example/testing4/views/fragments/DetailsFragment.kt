@@ -1,13 +1,11 @@
 package com.example.testing4.views.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.testing4.R
@@ -16,8 +14,8 @@ import com.example.testing4.api.RetrofitInstance
 import com.example.testing4.database.DataBaseProvider
 import com.example.testing4.database.Database
 import com.example.testing4.databinding.FragmentDetailsBinding
+import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.factory.Factory
-import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.models.resource.Result
 import com.example.testing4.repo.Repo
 import com.example.testing4.utils.Loader
@@ -31,6 +29,7 @@ class DetailsFragment : Fragment() {
     private lateinit var myAdapter: DetailViewPagerAdapter
     private lateinit var db: Database
     private lateinit var repo: Repo
+    private val d by lazy { DataStoreManager(requireContext()) }
 
 
     override fun onCreateView(
@@ -40,7 +39,7 @@ class DetailsFragment : Fragment() {
         binding = FragmentDetailsBinding.inflate(inflater, container, false)
         db = DataBaseProvider.getInstance(requireContext())
         repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
-        viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
+        viewModel = ViewModelProvider(this, Factory(repo, d))[ViewModel::class.java]
         observeData()
 
         return binding.root

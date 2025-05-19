@@ -1,7 +1,6 @@
 package com.example.testing4.views.maps
 
 import android.location.Geocoder
-import android.location.Geocoder.GeocodeListener
 import android.os.Bundle
 import android.widget.Toast
 import com.example.testing4.databinding.ActivityMapBinding
@@ -10,19 +9,17 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.testing4.R
 import com.example.testing4.api.RetrofitInstance
 import com.example.testing4.database.DataBaseProvider
-import com.example.testing4.database.Database
+import com.example.testing4.datastore.DataStoreManager
+import com.example.testing4.datastore.dataStore
 import com.example.testing4.factory.Factory
-import com.example.testing4.models.entities.UserAddress
 import com.example.testing4.repo.Repo
 import com.example.testing4.viewmodels.ViewModel
-import com.example.testing4.views.auth.userId
 import com.example.testing4.views.fragments.BottomSheetFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,6 +35,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var city : String
     private lateinit var state : String
     private lateinit var latLng : LatLng
+    private val dataStore by lazy { DataStoreManager(this) }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +45,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val db = DataBaseProvider.getInstance(this)
         val repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
-        viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
+        viewModel = ViewModelProvider(this, Factory(repo, dataStore))[ViewModel::class.java]
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)

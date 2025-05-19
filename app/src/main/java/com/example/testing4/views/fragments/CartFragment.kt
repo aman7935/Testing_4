@@ -1,13 +1,14 @@
 package com.example.testing4.views.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testing4.R
 import com.example.testing4.adapters.recyclerviewadapters.CartRvAdapter
@@ -18,12 +19,16 @@ import com.example.testing4.clicklisteners.OnItemClickDeleteCart
 import com.example.testing4.database.DataBaseProvider
 import com.example.testing4.database.Database
 import com.example.testing4.databinding.FragmentCartBinding
+import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.factory.Factory
-import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.product.ProductsItem
+import com.example.testing4.models.resource.Resource
+import com.example.testing4.models.resource.Result
 import com.example.testing4.repo.Repo
+import com.example.testing4.utils.Loader
 import com.example.testing4.viewmodels.ViewModel
-import com.example.testing4.views.auth.userId
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class CartFragment : Fragment() {
 
@@ -32,8 +37,10 @@ class CartFragment : Fragment() {
     private lateinit var repo: Repo
     private lateinit var db: Database
     private lateinit var cartRvAdapter: CartRvAdapter
+    private val dataStore by lazy { DataStoreManager(requireContext()) }
+    private var userID: String = ""
 
-    var cartItems= ArrayList<ProductsItem>()
+    private var cartItems = ArrayList<ProductsItem>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -42,38 +49,47 @@ class CartFragment : Fragment() {
 
         db = DataBaseProvider.getInstance(requireContext())
         repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
-        viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
+        viewModel = ViewModelProvider(this, Factory(repo, dataStore))[ViewModel::class.java]
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpRecyclerView()
-        viewModel.getAllCartItems(userId)
-        observeData()
-        val address = arguments?.getString("address")
 
+        lifecycleScope.launch {
+            userID = dataStore.getUserId.first()
+            viewModel.getAllCartItems(userID)
+
+            viewModel.getDefaultAddressByUserId(userID) {
+                it?.let {
+                    binding.address.text = it.address
+                }
+            }
+        }
+
+        setUpRecyclerView()
+        observeData()
+
+        val address = arguments?.getString("address")
         binding.change.setOnClickListener {
             findNavController().navigate(R.id.addressFragment)
         }
-        binding.address.text = address
     }
 
-    private fun calculateBillDetails(){
+    private fun calculateBillDetails(items: List<ProductsItem>) {
         var itemTotal = 0.0
-        var gstRate = 0.05
-        val delivery = .50
+        val gstRate = 0.05
+        val delivery = 0.50
 
-        cartItems.forEach {
-            var price = it.price?.toDouble() ?: 0.0
-            var quantity = it.quantity ?: 1
+        items.forEach {
+            val price = it.price?.toDouble() ?: 0.0
+            val quantity = it.quantity ?: 1
             itemTotal += price * quantity
         }
+
         val gstAmount = (itemTotal * gstRate).toFloat()
-
-        val deliveryCharges  = if (itemTotal >= 300) 0.0 else delivery
-
+        val deliveryCharges = if (itemTotal >= 300) 0.0 else delivery
         val totalAmount = (itemTotal + gstAmount + deliveryCharges).toFloat()
 
         binding.apply {
@@ -86,41 +102,55 @@ class CartFragment : Fragment() {
     }
 
     private fun setUpRecyclerView() {
-        cartRvAdapter =
-            CartRvAdapter(
-                cartItems,
-                onItemClickDeleteCart = object : OnItemClickDeleteCart {
-                    override fun onclickDelete(item: ProductsItem) {
-                        viewModel.deleteFromCart(item.id, userId)
-                    }
-                }, onClickIncrement = object : OnClickIncrement {
-                    override fun onClickIncrement(itemID: ProductsItem) {
-                        viewModel.incrementQuantity(itemID.id, userId)
-                    }
-                }, onClickDecrement = object : OnClickDecrement {
-                    override fun onClickDecrement(itemID: ProductsItem) {
-                        viewModel.decrementQuantity(itemID.id, userId)
-                    }
-                },
-                calculateBillDetails = { calculateBillDetails() }
-            )
-
+        cartRvAdapter = CartRvAdapter(
+            cartItems,
+            onItemClickDeleteCart = object : OnItemClickDeleteCart {
+                override fun onclickDelete(item: ProductsItem) {
+                    Loader.showDialog(requireContext())
+                    viewModel.deleteFromCart(item.id, userID)
+                }
+            },
+            onClickIncrement = object : OnClickIncrement {
+                override fun onClickIncrement(itemID: ProductsItem) {
+                    viewModel.incrementQuantity(itemID.id, userID)
+                }
+            },
+            onClickDecrement = object : OnClickDecrement {
+                override fun onClickDecrement(itemID: ProductsItem) {
+                    viewModel.decrementQuantity(itemID.id, userID)
+                }
+            },
+            calculateBillDetails = { calculateBillDetails(cartItems) }
+        )
 
         binding.cartRV.adapter = cartRvAdapter
-        binding.cartRV.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.cartRV.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun observeData() {
-
-
-
-        viewModel.cartItems.observe(viewLifecycleOwner) { productCartList ->
-            val cartProducts = productCartList.data ?: emptyList()
-            cartItems = ArrayList(cartProducts.map {
-                it.products.apply { quantity = it.quantity }
-            })
-            cartRvAdapter.updateList(cartItems)
+        viewModel.cartItems.observe(viewLifecycleOwner) { resource ->
+            when (resource.result) {
+                Result.LOADING -> {
+                    Loader.showDialog(requireContext())
+                }
+                Result.SUCCESS -> {
+                    Loader.hideDialog()
+                    val cartProducts = resource.data?.map {
+                        it.products.apply { quantity = it.quantity }
+                    } ?: emptyList()
+                    cartItems = ArrayList(cartProducts)
+                    cartRvAdapter.updateList(cartItems)
+                    calculateBillDetails(cartItems)
+                    resource.message?.let {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                Result.FAILURE -> {
+                    resource.message?.let {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 }

@@ -16,6 +16,10 @@ interface DbDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(dbTable: ProductItemsEntity)
 
+    /*@Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(dbTable: ProductItemsEntity, userId: String)*/
+
+
     @Query("SELECT * FROM ProductItemsEntity WHERE userId = :userId")
     fun getAllProducts(userId: String): LiveData<List<ProductItemsEntity>>
 
@@ -31,7 +35,7 @@ interface DbDao {
     fun getAllCartItems(userId: String): List<ProductCart>
 
     @Query("DELETE FROM ProductCart WHERE pID = :productID AND userId = :userId")
-    suspend fun deleteCartItem(productID: Int, userId: String)
+    suspend fun deleteCartItem(productID: Int, userId: String) : Int
 
     @Query("UPDATE ProductCart SET quantity = quantity + 1 WHERE pID = :productID AND userId = :userId")
     suspend fun incrementQuantity(productID: Int, userId: String)
@@ -54,6 +58,10 @@ interface DbDao {
     @Query("SELECT * FROM UserAddress WHERE userId = :userId")
     suspend fun getAllAddressesByUserId(userId: String): List<UserAddress>
 
+    @Query("UPDATE UserAddress SET defaultAddress = 0 WHERE userId = :userId")
+    suspend fun resetDefaultAddress(userId: String)
 
+    @Query("SELECT * FROM UserAddress WHERE userId = :userId AND defaultAddress = 1")
+    suspend fun getDefaultAddressByUserId(userId: String): UserAddress?
 
 }

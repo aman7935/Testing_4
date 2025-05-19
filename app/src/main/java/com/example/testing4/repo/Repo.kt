@@ -3,6 +3,7 @@ package com.example.testing4.repo
 import androidx.lifecycle.LiveData
 import com.example.testing4.api.VybeShopApi
 import com.example.testing4.database.DbDao
+import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.models.category.Category
 import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
@@ -10,6 +11,8 @@ import com.example.testing4.models.entities.UserAddress
 import com.example.testing4.models.product.Products
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.utils.toEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import retrofit2.Response
 
 class Repo(private val vybeShopApi: VybeShopApi, private val dbDao: DbDao) {
@@ -23,9 +26,11 @@ class Repo(private val vybeShopApi: VybeShopApi, private val dbDao: DbDao) {
     suspend fun getProductByID(id : Int) : Response<ProductsItem> {
         return vybeShopApi.getProductById(id)
     }
-    suspend fun insertProduct(products : ProductsItem){
-        dbDao.insert(products.toEntity())
+    suspend fun insertProduct(products: ProductsItem, dataStore: DataStoreManager) {
+        val userId = dataStore.getUserId.first()
+        dbDao.insert(products.toEntity(userId))
     }
+
     fun getAllProducts(userId: String) : LiveData<List<ProductItemsEntity>>{
         return dbDao.getAllProducts(userId)
     }
@@ -40,8 +45,8 @@ class Repo(private val vybeShopApi: VybeShopApi, private val dbDao: DbDao) {
     fun getAllCartItems(userId: String) : List<ProductCart>{
         return dbDao.getAllCartItems(userId)
     }
-    suspend fun deleteFromCart(pID : Int, userId: String){
-        return dbDao.deleteCartItem(pID, userId)
+    suspend fun deleteFromCart(pID : Int, userId: String) : Boolean{
+        return dbDao.deleteCartItem(pID, userId) > 0
     }
     suspend fun incrementQuantity(pID: Int, userId: String){
         return dbDao.incrementQuantity(pID,  userId)
@@ -55,6 +60,12 @@ class Repo(private val vybeShopApi: VybeShopApi, private val dbDao: DbDao) {
     suspend fun saveLocationIfNotExists(location: UserAddress) { return dbDao.insertAddress(location) }
 
     suspend fun getAllAddressesByUserId(userId: String): List<UserAddress> { return dbDao.getAllAddressesByUserId(userId) }
+
+    suspend fun resetDefaultAddress(userId: String) { return dbDao.resetDefaultAddress(userId) }
+
+    suspend fun getDefaultAddressByUserId(userId: String): UserAddress? { return dbDao.getDefaultAddressByUserId(userId) }
+
+
 
 
 }

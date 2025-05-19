@@ -13,7 +13,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.testing4.R
 import com.example.testing4.adapters.recyclerviewadapters.CategoryRVAdapter
 import com.example.testing4.adapters.recyclerviewadapters.ProductAdapter
-import com.example.testing4.adapters.viewpageradapters.DetailViewPagerAdapter
 import com.example.testing4.adapters.viewpageradapters.HomeScreenViewPagerAdapter
 import com.example.testing4.api.RetrofitInstance
 import com.example.testing4.clicklisteners.OnItemClickListener
@@ -21,6 +20,7 @@ import com.example.testing4.clicklisteners.OnItemClickListenerDetails
 import com.example.testing4.database.DataBaseProvider
 import com.example.testing4.database.Database
 import com.example.testing4.databinding.FragmentHomeBinding
+import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.factory.Factory
 import com.example.testing4.models.category.CategoryItem
 import com.example.testing4.models.product.ProductsItem
@@ -33,7 +33,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.getValue
 
 class HomeFragment : Fragment(){
     private lateinit var binding: FragmentHomeBinding
@@ -41,6 +40,7 @@ class HomeFragment : Fragment(){
     private lateinit var viewModel: ViewModel
     private lateinit var productAdapter: ProductAdapter
     private lateinit var db: Database
+    private val dataStore by lazy { DataStoreManager(requireContext()) }
 
 
     private val categoryItem = ArrayList<CategoryItem>()
@@ -142,7 +142,7 @@ class HomeFragment : Fragment(){
 
     private fun observeData() {
         val repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
-        viewModel = ViewModelProvider(this, Factory(repo))[ViewModel::class.java]
+        viewModel = ViewModelProvider(this, Factory(repo, dataStore))[ViewModel::class.java]
 
         isCategoryLoaded = false
         isProductLoaded = false
