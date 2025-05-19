@@ -47,8 +47,8 @@ interface DbDao {
     /*@Query("SELECT * FROM UserAddress WHERE userId = :userId AND address = :address")
     suspend fun getAddressByUserIdAndAddress(userId: String, address: String): UserAddress?*/
 
-    @Query("SELECT COUNT(*) FROM UserAddress WHERE userId = :userId AND latitude = :latitude AND longitude = :longitude")
-    suspend fun countAddressesByUserIdAndLocation(userId: String, latitude: Double, longitude: Double): Int
+    /*@Query("SELECT COUNT(*) FROM UserAddress WHERE userId = :userId AND latitude = :latitude AND longitude = :longitude")
+    suspend fun countAddressesByUserIdAndLocation(userId: String, latitude: Double, longitude: Double): Int*/
 
 
     @Query("SELECT * FROM UserAddress WHERE userId = :userId")

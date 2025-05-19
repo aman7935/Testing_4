@@ -161,10 +161,9 @@ class ViewModel(private val repo: Repo) : ViewModel() {
 
     //userAddresses
     //(callbacks)app stays smooth and knows when the job is done without wasting time.
-    fun saveAddress(userAddress: UserAddress, onResult: (Boolean) -> Unit) {
+    fun saveAddress(userAddress: UserAddress) {
         viewModelScope.launch {
-            val saved = repo.saveLocationIfNotExists(userAddress)
-            onResult(saved)
+            repo.saveLocationIfNotExists(userAddress)
         }
     }
 

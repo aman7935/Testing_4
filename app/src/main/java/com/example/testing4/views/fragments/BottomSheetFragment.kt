@@ -80,24 +80,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
                 return@setOnClickListener
             }
 
-            val userAddress = UserAddress(
-                userId = userId,
-                latitude = latLng.latitude,
-                longitude = latLng.longitude,
-                addressType = selectedText!!,
-                apartmentOrHouseNo = apartmentOrHouseNo,
-                streetDetails = streetDetails,
-                landmark = landmark
-            )
-
-            viewModel.saveAddress(userAddress) { saved ->
-                if (saved) {
-                    Toast.makeText(requireContext(), "Address saved successfully", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), "Address already exists", Toast.LENGTH_SHORT).show()
-                }
-                dismiss()
-            }
+            val userAddress =
         }
     }
 }
