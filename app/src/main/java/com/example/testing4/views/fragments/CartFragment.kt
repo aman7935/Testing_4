@@ -80,24 +80,33 @@ class CartFragment : Fragment() {
     private fun calculateBillDetails(items: List<ProductsItem>) {
         var itemTotal = 0.0
         val gstRate = 0.05
-        val delivery = 0.50
+        var delivery = 0.50
 
         items.forEach {
             val price = it.price?.toDouble() ?: 0.0
             val quantity = it.quantity ?: 1
-            itemTotal += price * quantity
+            itemTotal += (price*85) * quantity
         }
 
         val gstAmount = (itemTotal * gstRate).toFloat()
-        val deliveryCharges = if (itemTotal >= 300) 0.0 else delivery
-        val totalAmount = (itemTotal + gstAmount + deliveryCharges).toFloat()
+        if (itemTotal >= 300){
+            delivery == 0.0
+            binding.textView2.visibility = View.GONE
+        }
+        else{
+            delivery = itemTotal*0.3
+            binding.textView2.visibility = View.VISIBLE
+            binding.textView2.text = "Add items worth more then ₹ ${300-itemTotal}"
+        }
+
+        val totalAmount = (itemTotal + gstAmount + delivery).toFloat()
 
         binding.apply {
             amount.text = itemTotal.toString()
             gstTv.text = gstAmount.toString()
-            totalPriceTv.text = totalAmount.toString()
-            deliveyTv.text = if (deliveryCharges == 0.0) "Free" else "Free above shopping of 300"
-            billAmount.text = totalAmount.toString()
+            totalPriceTv.text = "₹ ${totalAmount.toString()}"
+            deliveyTv.text = if (delivery == 0.0) "Free" else "$delivery"
+            billAmount.text = "₹ ${totalAmount.toString()}"
         }
     }
 

@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="170dp"
         android:background="@drawable/main_activity_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,14 +20,15 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="68dp"
             android:gravity="center"
             android:text="PROFILE"
+            android:layout_marginTop="35dp"
+            android:fontFamily="@font/nunito_regular"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -40,10 +41,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toBottomOf="@id/constraintLayout4"
         app:shapeAppearanceOverlay="@style/circle"
-        app:strokeColor="@color/white"
-        app:strokeWidth="3dp" />
+        app:strokeColor="@color/white"/>
 
     <TextView
         android:id="@+id/name"
@@ -70,243 +71,121 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="23dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mobileNumber">
+        app:layout_constraintTop_toBottomOf="@+id/mobileNumber">
 
-        <!-- Menu Item: My Orders -->
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="6dp"
-            android:background="@drawable/search_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="6dp">
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableStart="@drawable/profile_bag"
+            android:drawableEnd="@drawable/arrow___right_"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="My Orders" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/bag_normal" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="My Orders" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow___right_" />
-        </LinearLayout>
-
-        <!-- Menu Item: Manage Address -->
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="6dp"
-            android:background="@drawable/search_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="6dp">
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableStart="@drawable/mappin"
+            android:drawableEnd="@drawable/arrow___right_"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="Manage Addresses" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/location_icon" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="Manage Address" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow___right_" />
-        </LinearLayout>
 
         <!-- Menu Item: Contact Us -->
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="6dp"
-            android:background="@drawable/search_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="6dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/phonecall" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="Contact Us" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow___right_" />
-        </LinearLayout>
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableStart="@drawable/phonecall"
+            android:drawableEnd="@drawable/arrow___right_"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="Contact us" />
 
         <!-- Menu Item: Favorites -->
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="6dp"
-            android:background="@drawable/search_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="6dp">
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableStart="@drawable/heart"
+            android:drawableEnd="@drawable/arrow___right_"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="Favorites" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/favorites"
-                android:src="@drawable/heart_icon_civ" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="Favorites" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow___right_" />
-        </LinearLayout>
-
-        <!-- Menu Item: Wishlist -->
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="6dp"
-            android:background="@drawable/search_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="6dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/bag_normal" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="Wishlist" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow___right_" />
-        </LinearLayout>
-
-        <!-- Menu Item: Feedback -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="6dp"
-            android:background="@drawable/search_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="6dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/filetext" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="Submit Feedback" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow___right_" />
-        </LinearLayout>
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableStart="@drawable/filetext"
+            android:drawableEnd="@drawable/arrow___right_"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="Submit Feedback" />
 
         <!-- Menu Item: About Us -->
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="6dp"
-            android:background="@drawable/search_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="6dp">
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableStart="@drawable/info"
+            android:drawableEnd="@drawable/arrow___right_"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="About us" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/info" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="About Us" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow___right_" />
-        </LinearLayout>
-
-        <!-- Menu Item: Logout -->
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="6dp"
-            android:background="@drawable/search_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="6dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/signout" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="Logout" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow___right_" />
-        </LinearLayout>
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableStart="@drawable/signout"
+            android:drawableEnd="@drawable/arrow___right_"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="Logout"
+            android:textColor="@color/like_color" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

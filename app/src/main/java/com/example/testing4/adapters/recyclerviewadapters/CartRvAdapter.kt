@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.testing4.R
 import com.example.testing4.clicklisteners.OnClickDecrement
 import com.example.testing4.clicklisteners.OnClickIncrement
 import com.example.testing4.clicklisteners.OnItemClickDelete
@@ -56,7 +57,12 @@ class CartRvAdapter(
 
 
                 number.text = item.quantity.toString()
-                Glide.with(itemView.context).load(item.images.firstOrNull()).into(imgID)
+
+                Glide.with(itemView.context)
+                    .load(item.images.firstOrNull())
+                    .placeholder(R.drawable.landscape_placeholder_svgrepo_com)
+                    .into(imgID)
+
 
                 deleteBTN.setOnClickListener {
                     onItemClickDeleteCart.onclickDelete(item)

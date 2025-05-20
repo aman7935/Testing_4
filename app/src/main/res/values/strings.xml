@@ -41,4 +41,7 @@
     <string name="enter_a_nearby_landmark">Enter a nearby landmark</string>
     <string name="make_this_address_default">make this address default</string>
     <string name="save_address">Save Address</string>
+    <string name="delivery_charges">Delivery charges</string>
+    <string name="delete">Delete</string>
+    <string name="buy_now">Buy Now</string>
 </resources>

@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -33,6 +34,7 @@
                     android:text="@string/cart"
                     android:textSize="17sp"
                     android:textStyle="bold"
+                    android:fontFamily="@font/nunito_regular"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -44,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginHorizontal="8dp"
             android:nestedScrollingEnabled="false"
             app:layout_constraintBottom_toTopOf="@id/details"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +57,10 @@
             android:id="@+id/details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/page_background"
+            app:cardCornerRadius="10dp"
             android:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,6 +75,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_regular"
                     android:text="@string/bill_details"
                     android:textStyle="bold" />
 
@@ -81,77 +88,105 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Item Total" />
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="Item Total"
+                        android:textColor="#939696" />
 
                     <TextView
                         android:id="@+id/amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_regular"
                         android:text="price total" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Amount(Excel. GST)" />
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="Amount(Excel. GST)"
+                        android:textColor="#939696" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_regular"
                         android:text="0" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="GST (5%)" />
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="GST (5%)"
+                        android:textColor="#939696" />
 
                     <TextView
                         android:id="@+id/gst_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_regular"
                         android:text="0" />
                 </LinearLayout>
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal">
+                    android:layout_marginBottom="4dp">
 
                     <TextView
+                        android:id="@+id/textView3"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Delivery charges" />
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="@string/delivery_charges"
+                        android:textColor="#939696"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/delivey_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="free ₹ 300" />
-                </LinearLayout>
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="free ₹ 300"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="Add items worth more then"
+                        android:textColor="#007FBF"
+                        android:textSize="11sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textView3" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -168,14 +203,18 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/nunito_regular"
                         android:text="To pay"
+                        android:textColor="#939696"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/total_price_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="total price" />
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="total price"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -184,69 +223,110 @@
             android:id="@+id/location_info_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:background="@color/white"
             android:orientation="vertical"
             android:padding="8dp"
+            android:layout_marginTop="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/details">
+            app:layout_constraintTop_toBottomOf="@+id/details">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delivering to" />
-
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="4dp"
+                android:layout_marginHorizontal="3dp"
                 android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/deliveringto_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delivering to"
+                    android:textColor="#939696"
+                    android:fontFamily="@font/nunito_regular"
+                    app:layout_constraintBottom_toTopOf="@id/address"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
                     android:layout_weight="1"
-                    android:text="tafaefafaefaefa" />
+                    android:text="tafaefafaefaefa"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/nunito_regular"
+                    app:layout_constraintEnd_toStartOf="@+id/change"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/deliveringto_tv" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/change"
-                    android:layout_width="110dp"
-                    android:layout_height="50dp"
-                    android:text="Change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:backgroundTint="@color/white"
+                    android:paddingHorizontal="10dp"
+                    android:text="Change"
                     android:textColor="#FF5722"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#FF5722"/>
-            </LinearLayout>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5"
+                    app:strokeColor="#FF5722"
+                    app:strokeWidth="1dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="To pay" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="3dp"
+                android:background="@drawable/dotted_divider" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="3dp"
                 android:layout_marginVertical="4dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/bill_amount"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="tafaefafaefaefa" />
-
-                <TextView
+                    android:id="@+id/topay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/mainColor"
-                    android:padding="7dp"
+                    android:text="To pay"
+                    android:textColor="#939696"
+                    android:fontFamily="@font/nunito_regular"
+                    app:layout_constraintBottom_toTopOf="@+id/bill_amount"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5" />
+
+                <TextView
+                    android:id="@+id/bill_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="tafaefafaefaefa"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/nunito_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/topay" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainColor"
+                    android:paddingHorizontal="40dp"
                     android:text="Pay"
-                    android:textColor="@color/white"/>
-            </LinearLayout>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
