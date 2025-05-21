@@ -1,6 +1,7 @@
 package com.example.testing4.views.maps
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -8,7 +9,10 @@ import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.view.*
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -27,7 +31,10 @@ import com.example.testing4.databinding.FragmentAddressBinding
 import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.factory.Factory
 import com.example.testing4.models.entities.UserAddress
+import com.example.testing4.models.resource.Resource
+import com.example.testing4.models.resource.Result
 import com.example.testing4.repo.Repo
+import com.example.testing4.utils.Loader
 import com.example.testing4.viewmodels.ViewModel
 import com.google.android.gms.location.*
 import kotlinx.coroutines.flow.first
@@ -43,8 +50,8 @@ class AddressFragment : Fragment() {
     private lateinit var addressAdapter: AddressAdapter
     private lateinit var viewModel: ViewModel
     private lateinit var address: String
-    private lateinit var  dataStore : DataStoreManager
-    private lateinit var  userID : String
+    private lateinit var dataStore: DataStoreManager
+    private lateinit var userID: String
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -78,37 +85,56 @@ class AddressFragment : Fragment() {
             LocationServices.getFusedLocationProviderClient(requireContext())
         geoCoder = Geocoder(requireContext(), Locale.getDefault())
 
+        lifecycleScope.launch {
+            userID = dataStore.getUserId.first()
+            setUpRecyclerView()
+            viewModel.getAddressById(userID)
+            observeAddresses()
+        }
+
         binding.addbtn.setOnClickListener {
             checkLocationAndPermission()
         }
 
-        addressAdapter = AddressAdapter(emptyList(), object : OnClickListenerForAddress {
-            override fun onClickForAddress(list: UserAddress) {
-                address = "${list.apartmentOrHouseNo}, ${list.streetDetails}"
-            }
-        })
-
-        binding.addressRV.layoutManager = LinearLayoutManager(requireContext())
-        binding.addressRV.adapter = addressAdapter
-
-
-        lifecycleScope.launch {
-            userID = dataStore.getUserId.first()
-        }
-        getAllAddresses()
-
         binding.saveBtn.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("address", address)
-            }
-            findNavController().navigate(R.id.action_addressFragment_to_cartFragment, bundle)
+            findNavController().navigate(R.id.action_addressFragment_to_cartFragment)
         }
     }
 
-    private fun getAllAddresses() {
-        viewModel.getAllAddressesByUserId(userID) { addressList ->
-            // Update adapter data and refresh RecyclerView when new data arrives
+    private fun setUpRecyclerView() {
+        addressAdapter = AddressAdapter(emptyList(), object : OnClickListenerForAddress {
+            override fun onClickForAddress(list: UserAddress) {
+                if (list.defaultAddress == 1) {
+                    // Toggle off default address
+                    list.defaultAddress = 0
+                } else if (list.defaultAddress == 0) {
+                    // Reset other default addresses and set new one
+                    /*viewModel.resetDefaultAddress(userID)
+                    viewModel.setDefaultAddressById(userID, list.id)*/
+                    viewModel.makeDefaultAddress(list.id, list.userId)
+                    viewModel.getAddressById(userID)
+
+                }
+            }
+        })
+        binding.addressRV.layoutManager = LinearLayoutManager(requireContext())
+        binding.addressRV.adapter = addressAdapter
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun observeAddresses() {
+        viewModel.address.observe(viewLifecycleOwner) { addressList ->
+            Log.d("TAG", "observeAddresses: $addressList")
             addressAdapter.updateList(addressList)
+        }
+
+        viewModel.isSelectesAaddress.observe(viewLifecycleOwner)
+        {
+            if (it) {
+                viewModel.getAddressById(userID)
+            } else {
+                viewModel.isSelectesAaddress.postValue(false)
+            }
         }
     }
 
@@ -123,15 +149,14 @@ class AddressFragment : Fragment() {
             ) {
                 getCurrentLocation()
             } else {
-                // Request location permission from user
                 locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
     }
 
     private fun isLocationEnabled(context: Context): Boolean {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        // Check if either GPS or Network location provider is enabled
+        val locationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
@@ -148,21 +173,15 @@ class AddressFragment : Fragment() {
             .show()
     }
 
-    // Using GPS + NETWORK for the most accurate location
     private fun getCurrentLocation() {
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 0).apply {
-            setMinUpdateIntervalMillis(0) /* minimum interval for updates means if the updates get faster than the
-            constructor interval then the update will have to wait for this much interval */
-
-            setMaxUpdateDelayMillis(0) /* want location updates but Android is allowed to send a batch of updates
-            sending multiple updates at once */
-
-            setWaitForAccurateLocation(true)  // telling Android to wait until it can get a more accurate location before delivering the update to your app.
-            setGranularity(Granularity.GRANULARITY_FINE) // return precise latitude/longitude using GPS..
-            setMaxUpdates(1)    // sets the maximum number of location updates your app wants to receive before the request automatically stops
+            setMinUpdateIntervalMillis(0)
+            setMaxUpdateDelayMillis(0)
+            setWaitForAccurateLocation(true)
+            setGranularity(Granularity.GRANULARITY_FINE)
+            setMaxUpdates(1)
         }.build()
 
-        // This is an abstract class used to receive location updates asynchronously (in the background).
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val location = locationResult.lastLocation
@@ -176,7 +195,6 @@ class AddressFragment : Fragment() {
                     Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT)
                         .show()
                 }
-                // Used to manually stop location updates once you’ve received the needed result. (DEFENSIVE PROGRAMMING PRACTICE)
                 fusedLocationProviderClient.removeLocationUpdates(this)
             }
         }
@@ -187,13 +205,9 @@ class AddressFragment : Fragment() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest, // tells the system how to get the location (e.g., accuracy, interval).
-                locationCallback, // what happens when a new location is received (usually where location.latitude and location.longitude).
-                requireActivity().mainLooper /* callback runs on the main (UI) thread, which is necessary if we plan to update the UI
-                    (e.g., start a new activity or show a Toast).
-                    If you omit this parameter, the callback might run on a background thread,
-                    which could cause issues if you try to update the UI directly from there.
-                    UI must be updated from the main thread */
+                locationRequest,
+                locationCallback,
+                requireActivity().mainLooper
             )
         } else {
             Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT)
@@ -201,10 +215,10 @@ class AddressFragment : Fragment() {
         }
     }
 
-    /*override fun onStop() {
+    override fun onStop() {
         super.onStop()
         if (::fusedLocationProviderClient.isInitialized && ::locationCallback.isInitialized) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         }
-    }*/
+    }
 }

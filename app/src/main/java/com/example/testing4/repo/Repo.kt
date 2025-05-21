@@ -65,6 +65,17 @@ class Repo(private val vybeShopApi: VybeShopApi, private val dbDao: DbDao) {
 
     suspend fun getDefaultAddressByUserId(userId: String): UserAddress? { return dbDao.getDefaultAddressByUserId(userId) }
 
+    suspend fun setDefaultAddressById(userId: String, addressId: Int)
+    {
+        return dbDao.setDefaultAddressById(userId, addressId)
+    }
+
+    suspend fun makeAddressDefault(id:Int,userId:String)
+    {
+        return dbDao.makeAddressDefault(id,userId)
+    }
+
+
 
 
 

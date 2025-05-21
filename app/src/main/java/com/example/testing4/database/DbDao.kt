@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
 import com.example.testing4.models.entities.UserAddress
@@ -63,5 +64,16 @@ interface DbDao {
 
     @Query("SELECT * FROM UserAddress WHERE userId = :userId AND defaultAddress = 1")
     suspend fun getDefaultAddressByUserId(userId: String): UserAddress?
+
+    @Query("UPDATE UserAddress SET defaultAddress = 1 WHERE userId = :userId AND id = :addressId")
+    suspend fun setDefaultAddressById(userId: String, addressId: Int)
+
+    @Transaction
+    suspend fun makeAddressDefault(id:Int,userId:String)
+    {
+        resetDefaultAddress(userId)
+        setDefaultAddressById(userId,id)
+    }
+
 
 }

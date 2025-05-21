@@ -1,5 +1,6 @@
 package com.example.testing4.adapters.recyclerviewadapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +17,15 @@ class AddressAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bindData(position: Int) {
             val address = addressList[position]
+            if (addressList[position].defaultAddress == 1) {
+                binding.radioButton.isChecked = true
+            } else {
+                binding.radioButton.isChecked = false
+            }
+
             binding.titleText.text = address.addressType
             binding.addressText.text = "${address.apartmentOrHouseNo}, ${address.streetDetails}"
-            itemView.setOnClickListener {
-                onClickListenerForAddress.onClickForAddress(address)
-            }
+
         }
     }
 
@@ -32,6 +37,18 @@ class AddressAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bindData(position)
+
+
+        holder.binding.radioButton.setOnClickListener {
+            onClickListenerForAddress.onClickForAddress(addressList[position])
+            /* if (address.defaultAddress == 1){
+                 binding.radioButton.isChecked = true
+
+             }else{
+                 binding.radioButton.isChecked = false
+             }*/
+
+        }
     }
 
     override fun getItemCount(): Int = addressList.size
@@ -39,6 +56,8 @@ class AddressAdapter(
     // Add this function to update the list and refresh the RecyclerView
     fun updateList(newList: List<UserAddress>) {
         addressList = newList
+        Log.d("TAG", "updateList: $addressList")
+        Log.d("TAG", "updateList: $newList")
         notifyDataSetChanged()
     }
 }

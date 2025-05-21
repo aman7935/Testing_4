@@ -41,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-
+        
         app:layout_constraintTop_toBottomOf="@id/constraintLayout4"
         app:shapeAppearanceOverlay="@style/circle"
         app:strokeColor="@color/white"/>
@@ -89,22 +89,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:text="My Orders" />
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:drawableStart="@drawable/mappin"
-            android:drawableEnd="@drawable/arrow___right_"
-            android:drawablePadding="5dp"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="Manage Addresses" />
 
 
         <!-- Menu Item: Contact Us -->

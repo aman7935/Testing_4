@@ -1,6 +1,7 @@
 package com.example.testing4.views.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,8 +28,16 @@ import com.example.testing4.models.resource.Result
 import com.example.testing4.repo.Repo
 import com.example.testing4.utils.Loader
 import com.example.testing4.viewmodels.ViewModel
+import com.stripe.Stripe
+import com.stripe.android.PaymentConfiguration
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
+import com.stripe.model.PaymentIntent
+import com.stripe.param.PaymentIntentCreateParams
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CartFragment : Fragment() {
 
@@ -39,6 +48,10 @@ class CartFragment : Fragment() {
     private lateinit var cartRvAdapter: CartRvAdapter
     private val dataStore by lazy { DataStoreManager(requireContext()) }
     private var userID: String = ""
+    private lateinit var stripe: Stripe
+    private lateinit var paymentSheet: PaymentSheet
+    private lateinit var paymentSheetCustomerConfig: PaymentSheet.CustomerConfiguration
+    private lateinit var clientSecret: String
 
     private var cartItems = ArrayList<ProductsItem>()
 
@@ -46,12 +59,116 @@ class CartFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentCartBinding.inflate(inflater, container, false)
-
+        paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
         db = DataBaseProvider.getInstance(requireContext())
         repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
         viewModel = ViewModelProvider(this, Factory(repo, dataStore))[ViewModel::class.java]
+        Stripe.apiKey = "sk_test_51RR8KeH8H0Wz0viAgeT61oQACK9ue1Skzk2rq2yCLVy63VUy15Uvld5uZDQr3IF6X1EPBTAPRFFLE2EMz5bpepCJ00NAd8Gahq"
+        PaymentConfiguration.init(
+            requireActivity().applicationContext,
+            "pk_test_51RR8KeH8H0Wz0viAb67HBIuEzN607G8ATcrCssZw5zyFp07g2biEURE3EATeDKdSLTdONDA281HtsUEzxZ5lDC6h00CZSXjQEK"
+        )
 
+        binding.topay.setOnClickListener {
+//            createPaymentIntent()
+        }
+
+        binding.payBtn.setOnClickListener {
+           /* PaymentConfiguration.init(
+                requireActivity().applicationContext,
+                "sk_test_51RR8KeH8H0Wz0viAb67HBIuEzN607G8ATcrCssZw5zyFp07g2biEURE3EATeDKdSLTdONDA281HtsUEzxZ5lDC6h00CZSXjQEK" // Replace with your publishable key
+            )
+
+            // Assume clientSecret is passed securely from your backend
+            paymentSheet.presentWithPaymentIntent(
+                "sk_test_51RR8KeH8H0Wz0viAgeT61oQACK9ue1Skzk2rq2yCLVy63VUy15Uvld5uZDQr3IF6X1EPBTAPRFFLE2EMz5bpepCJ00NAd8Gahq",
+                PaymentSheet.Configuration(
+                    merchantDisplayName = "Vybeshop",
+                    allowsDelayedPaymentMethods = true
+                )
+            )*/
+
+            createPaymentIntent()
+
+        }
         return binding.root
+
+
+    }
+
+    private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        when (paymentSheetResult) {
+            is PaymentSheetResult.Completed -> {
+                Toast.makeText(requireContext(), "Payment successful!", Toast.LENGTH_SHORT).show()
+            }
+            is PaymentSheetResult.Canceled -> {
+                Toast.makeText(requireContext(), "Payment canceled!", Toast.LENGTH_SHORT).show()
+            }
+            is PaymentSheetResult.Failed -> {
+                Toast.makeText(requireContext(), "Payment failed: ${paymentSheetResult.error.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    /*fun createPaymentIntent() {
+        Stripe.apiKey = "sk_test_51RR8KeH8H0Wz0viAgeT61oQACK9ue1Skzk2rq2yCLVy63VUy15Uvld5uZDQr3IF6X1EPBTAPRFFLE2EMz5bpepCJ00NAd8Gahq"
+
+        lifecycleScope.launch {
+            try {
+                val params = PaymentIntentCreateParams.builder()
+                    .setAmount(2000L)
+                    .setCurrency("usd")
+                    .setAutomaticPaymentMethods(
+                        PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
+                            .setEnabled(true)
+                            .build()
+                    )
+                    .build()
+
+                val paymentIntent = PaymentIntent.create(params)
+                Log.d("TAG", "createPaymentIntent: $paymentIntent")
+            }
+            catch (e: Exception){
+                e.printStackTrace()
+                Log.d("TAG", "createPaymentIntent: ${e.message}")
+            }
+        }
+
+
+
+
+    }*/
+
+    private fun createPaymentIntent() {
+        lifecycleScope.launch {
+            try {
+                val paymentIntent = withContext(Dispatchers.IO) {
+                    val params = PaymentIntentCreateParams.builder()
+                        .setAmount(8000L)
+                        .setCurrency("usd")
+                        .setAutomaticPaymentMethods(
+                            PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
+                                .setEnabled(true)
+                                .build()
+                        )
+                        .build()
+
+                    PaymentIntent.create(params)
+                }
+
+                clientSecret = paymentIntent.clientSecret ?: throw Exception("Client secret is null")
+                Log.d("PaymentIntent", "Created: $clientSecret")
+
+                // Launch PaymentSheet now that clientSecret is ready
+                paymentSheet.presentWithPaymentIntent(
+                    clientSecret,
+                    PaymentSheet.Configuration("Vybeshop")
+                )
+
+            } catch (e: Exception) {
+                Log.e("PaymentIntent", "Error: ${e.message}", e)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

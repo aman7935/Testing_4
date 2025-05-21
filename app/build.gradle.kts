@@ -94,7 +94,7 @@ dependencies {
     //google maps
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
-
-
+    implementation ("com.stripe:stripe-java:29.1.0")
+    implementation ("com.stripe:stripe-android:21.14.0")
 
 }

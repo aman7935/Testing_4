@@ -15,5 +15,5 @@ data class UserAddress(
     val apartmentOrHouseNo : String,
     val streetDetails : String,
     val landmark : String,
-    val defaultAddress: Int = 0
+    var defaultAddress: Int = 0
 )

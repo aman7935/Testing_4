@@ -1,6 +1,8 @@
 package com.example.testing4.viewmodels
 
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -170,6 +172,17 @@ class ViewModel(private val repo: Repo, private val dataStore: DataStoreManager)
         }
     }
 
+    private val _address = MutableLiveData<List<UserAddress>>()
+    val address: LiveData<List<UserAddress>> get() = _address
+
+    fun getAddressById(id: String) {
+        viewModelScope.launch {
+            val address = repo.getAllAddressesByUserId(id)
+            _address.postValue(address)
+        }
+    }
+
+
     fun getAllAddressesByUserId(userId: String, onResult: (List<UserAddress>) -> Unit) {
         viewModelScope.launch {
             val addresses = repo.getAllAddressesByUserId(userId)
@@ -183,10 +196,41 @@ class ViewModel(private val repo: Repo, private val dataStore: DataStoreManager)
         }
     }
 
+    val isSelectesAaddress= MutableLiveData<Boolean>()
     fun getDefaultAddressByUserId(userId: String, onResult: (UserAddress?) -> Unit) {
         viewModelScope.launch {
             val defaultAddress = repo.getDefaultAddressByUserId(userId)
             onResult(defaultAddress)
+        }
+    }
+
+    fun setDefaultAddressById(userId: String, addressId: Int) {
+        try {
+            viewModelScope.launch {
+                repo.setDefaultAddressById(userId, addressId)
+            }
+        }
+        catch (e: Exception)
+        {
+            Log.d(TAG, "setDefaultAddressById: ${e.printStackTrace()}")
+        }
+
+    }
+
+    fun makeDefaultAddress(id:Int,userId: String)
+    {
+        try {
+
+            viewModelScope.launch {
+                repo.makeAddressDefault(id, userId)
+                isSelectesAaddress.postValue(true)
+            }
+
+        }
+        catch (e: Exception)
+        {
+            isSelectesAaddress.postValue(false)
+            Log.d(TAG, "setDefaultAddressById: ${e.printStackTrace()}")
         }
     }
 }
