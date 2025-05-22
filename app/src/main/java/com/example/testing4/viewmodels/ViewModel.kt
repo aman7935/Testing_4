@@ -10,6 +10,7 @@ import com.example.testing4.models.category.Category
 import com.example.testing4.repo.Repo
 import androidx.lifecycle.viewModelScope
 import com.example.testing4.datastore.DataStoreManager
+import com.example.testing4.models.entities.OrdersEntity
 import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
 import com.example.testing4.models.entities.UserAddress
@@ -233,4 +234,28 @@ class ViewModel(private val repo: Repo, private val dataStore: DataStoreManager)
             Log.d(TAG, "setDefaultAddressById: ${e.printStackTrace()}")
         }
     }
+
+    //table for orders
+
+    /*fun insertOrder(ordersEntity: OrdersEntity){
+        viewModelScope.launch {
+            repo.insertOrder(ordersEntity)
+        }
+    }*/
+
+    val isOrderSaved= MutableLiveData<Boolean>()
+
+    fun saveOrdersAndDeleteFromCart(ordersEntity: OrdersEntity, userId: String){
+        try {
+            viewModelScope.launch {
+                repo.saveOrdersAndDeleteFromCart(ordersEntity, userId)
+                isOrderSaved.postValue(true)
+            }
+        }
+        catch (e: Exception){
+            isOrderSaved.postValue(false)
+            Log.d(TAG, "saveOrdersAndDeleteFromCart: ${e.printStackTrace()}")
+        }
+    }
+
 }

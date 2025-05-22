@@ -1,16 +1,19 @@
 package com.example.testing4.views.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Index
 import com.example.testing4.R
 import com.example.testing4.adapters.recyclerviewadapters.CartRvAdapter
 import com.example.testing4.api.RetrofitInstance
@@ -22,6 +25,8 @@ import com.example.testing4.database.Database
 import com.example.testing4.databinding.FragmentCartBinding
 import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.factory.Factory
+import com.example.testing4.models.entities.OrdersEntity
+import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.models.resource.Resource
 import com.example.testing4.models.resource.Result
@@ -38,6 +43,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Locale
 
 class CartFragment : Fragment() {
 
@@ -46,12 +56,17 @@ class CartFragment : Fragment() {
     private lateinit var repo: Repo
     private lateinit var db: Database
     private lateinit var cartRvAdapter: CartRvAdapter
-    private val dataStore by lazy { DataStoreManager(requireContext()) }
+    private lateinit var dataStore : DataStoreManager
     private var userID: String = ""
     private lateinit var stripe: Stripe
     private lateinit var paymentSheet: PaymentSheet
     private lateinit var paymentSheetCustomerConfig: PaymentSheet.CustomerConfiguration
     private lateinit var clientSecret: String
+    private var orderID : String = ""
+    private var totalAmount : Long = 0
+    private lateinit var deliveryDate : String
+    val calendar = Calendar.getInstance()
+
 
     private var cartItems = ArrayList<ProductsItem>()
 
@@ -61,8 +76,17 @@ class CartFragment : Fragment() {
         binding = FragmentCartBinding.inflate(inflater, container, false)
         paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
         db = DataBaseProvider.getInstance(requireContext())
+        dataStore = DataStoreManager(requireContext())
         repo = Repo(RetrofitInstance.retroFitApi, db.dbDao)
         viewModel = ViewModelProvider(this, Factory(repo, dataStore))[ViewModel::class.java]
+
+        calendar.add(Calendar.DAY_OF_YEAR, 4)
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        deliveryDate = sdf.format(calendar.time)
+
+        lifecycleScope.launch {
+            userID = dataStore.getUserId.first()
+        }
         Stripe.apiKey = "sk_test_51RR8KeH8H0Wz0viAgeT61oQACK9ue1Skzk2rq2yCLVy63VUy15Uvld5uZDQr3IF6X1EPBTAPRFFLE2EMz5bpepCJ00NAd8Gahq"
         PaymentConfiguration.init(
             requireActivity().applicationContext,
@@ -87,18 +111,28 @@ class CartFragment : Fragment() {
                     allowsDelayedPaymentMethods = true
                 )
             )*/
-
             createPaymentIntent()
-
         }
         return binding.root
-
-
     }
 
     private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
         when (paymentSheetResult) {
             is PaymentSheetResult.Completed -> {
+                cartItems.forEach { item ->
+                    val order = OrdersEntity(
+                        userId = userID,
+                        products = item,
+                        billAmount = totalAmount,
+                        orderStatus = "Success",
+                        pID = item.id,
+                        quantity = item.quantity,
+                        orderID = orderID,
+                        deliveryDate = deliveryDate
+                    )
+                    viewModel.saveOrdersAndDeleteFromCart(order, userID)
+                }
+
                 Toast.makeText(requireContext(), "Payment successful!", Toast.LENGTH_SHORT).show()
             }
             is PaymentSheetResult.Canceled -> {
@@ -109,10 +143,12 @@ class CartFragment : Fragment() {
             }
         }
     }
+    /*private fun saveOrderDetails(productsItem: ProductCart) {
+        viewModel.insertOrder(order)
+    }*/
 
     /*fun createPaymentIntent() {
         Stripe.apiKey = "sk_test_51RR8KeH8H0Wz0viAgeT61oQACK9ue1Skzk2rq2yCLVy63VUy15Uvld5uZDQr3IF6X1EPBTAPRFFLE2EMz5bpepCJ00NAd8Gahq"
-
         lifecycleScope.launch {
             try {
                 val params = PaymentIntentCreateParams.builder()
@@ -133,10 +169,6 @@ class CartFragment : Fragment() {
                 Log.d("TAG", "createPaymentIntent: ${e.message}")
             }
         }
-
-
-
-
     }*/
 
     private fun createPaymentIntent() {
@@ -144,8 +176,8 @@ class CartFragment : Fragment() {
             try {
                 val paymentIntent = withContext(Dispatchers.IO) {
                     val params = PaymentIntentCreateParams.builder()
-                        .setAmount(8000L)
-                        .setCurrency("usd")
+                        .setAmount(totalAmount*100)
+                        .setCurrency("inr")
                         .setAutomaticPaymentMethods(
                             PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
                                 .setEnabled(true)
@@ -157,6 +189,7 @@ class CartFragment : Fragment() {
                 }
 
                 clientSecret = paymentIntent.clientSecret ?: throw Exception("Client secret is null")
+                orderID = paymentIntent.id ?: throw Exception("Order ID is null")
                 Log.d("PaymentIntent", "Created: $clientSecret")
 
                 // Launch PaymentSheet now that clientSecret is ready
@@ -188,7 +221,7 @@ class CartFragment : Fragment() {
         setUpRecyclerView()
         observeData()
 
-        val address = arguments?.getString("address")
+
         binding.change.setOnClickListener {
             findNavController().navigate(R.id.addressFragment)
         }
@@ -216,7 +249,7 @@ class CartFragment : Fragment() {
             binding.textView2.text = "Add items worth more then ₹ ${300-itemTotal}"
         }
 
-        val totalAmount = (itemTotal + gstAmount + delivery).toFloat()
+         totalAmount = (itemTotal + gstAmount + delivery).toLong()
 
         binding.apply {
             amount.text = itemTotal.toString()

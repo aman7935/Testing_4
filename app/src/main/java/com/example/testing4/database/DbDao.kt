@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.example.testing4.models.entities.OrdersEntity
 import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
 import com.example.testing4.models.entities.UserAddress
@@ -75,5 +76,23 @@ interface DbDao {
         setDefaultAddressById(userId,id)
     }
 
+
+    // table for orders
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrder(ordersEntity: OrdersEntity)
+
+
+    @Query("SELECT * FROM OrdersEntity WHERE userId = :userId")
+    fun getAllOrders(userId: String): LiveData<List<OrdersEntity>>
+
+    @Query("DELETE FROM OrdersEntity WHERE orderID = :orderID AND userId = :userId")
+    suspend fun deleteOrder(orderID: String, userId: String)
+
+
+    @Transaction
+    suspend fun saveOrdersAndDeleteFromCart(ordersEntity: OrdersEntity, userId: String) {
+        insertOrder(ordersEntity)
+        deleteCartItem(ordersEntity.pID, userId)
+    }
 
 }

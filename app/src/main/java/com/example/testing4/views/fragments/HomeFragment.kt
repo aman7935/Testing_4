@@ -77,9 +77,12 @@ class HomeFragment : Fragment(){
         db = DataBaseProvider.getInstance(requireContext())
         observeData()
         setUpRecyclerViewsAndViewPager()
+
+
         binding.cart.setOnClickListener {
             findNavController().navigate(R.id.cartFragment)
         }
+        binding.ivNotification.setOnClickListener {  }
     }
 
     private fun setUpRecyclerViewsAndViewPager() {

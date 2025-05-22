@@ -67,10 +67,12 @@
                     android:layout_weight="1" />
 
                 <ImageView
+                    android:id="@+id/iv_notification"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginBottom="4dp"
                     android:contentDescription="bell icon"
+
                     android:src="@drawable/bell_icon" />
 
                 <ImageView
