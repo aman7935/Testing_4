@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.testing4.R
+import com.example.testing4.databinding.ItemViewOrderlistBinding
 import com.example.testing4.databinding.OrdersItemViewBinding
 import com.example.testing4.models.entities.OrdersEntity
 
@@ -16,7 +17,7 @@ class OrderAdapter(private val orderList: List<OrdersEntity>) :
         viewType: Int
     ): ViewHolder {
         val binding =
-            OrdersItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemViewOrderlistBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -29,8 +30,14 @@ class OrderAdapter(private val orderList: List<OrdersEntity>) :
 
     override fun getItemCount(): Int = orderList.size
 
-    inner class ViewHolder(val binding: OrdersItemViewBinding) :
+    inner class ViewHolder(val binding: ItemViewOrderlistBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        fun bindData(position: Int) {
+            val order = orderList[position]
+            binding.orderId.text = "Order: #${order.orderID}"
+            binding.deliveryDate.text = order.deliveryDate
+            binding.totalAmount.text = "$${order.billAmount}"
+        }
     }
 }
