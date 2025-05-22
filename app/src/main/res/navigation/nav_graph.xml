@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_homeFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
     </fragment>
 
     <!-- Category Fragment -->
@@ -55,6 +58,9 @@
         <action
             android:id="@+id/action_categoryFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_categoryFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
 
     </fragment>
 
@@ -76,6 +82,9 @@
         <action
             android:id="@+id/action_favoritesFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_favoritesFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
@@ -97,6 +106,9 @@
         <action
             android:id="@+id/action_detailsFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_detailsFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
     </fragment>
     <fragment
         android:id="@+id/youFragment"
@@ -115,6 +127,9 @@
         <action
             android:id="@+id/action_youFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_youFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
@@ -135,6 +150,9 @@
         <action
             android:id="@+id/action_cartFragment_to_addressFragment"
             app:destination="@id/addressFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
     </fragment>
     <fragment
         android:id="@+id/addressFragment"
@@ -146,5 +164,26 @@
         <action
             android:id="@+id/action_addressFragment_to_cartFragment2"
             app:destination="@id/cartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ordersFragment"
+        android:name="com.example.testing4.views.fragments.OrdersFragment"
+        android:label="fragment_orders"
+        tools:layout="@layout/fragment_orders" >
+        <action
+            android:id="@+id/action_ordersFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_youFragment"
+            app:destination="@id/youFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
     </fragment>
 </navigation>

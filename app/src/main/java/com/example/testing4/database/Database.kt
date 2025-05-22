@@ -13,7 +13,7 @@ import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.entities.ProductItemsEntity
 import com.example.testing4.models.entities.UserAddress
 
-@Database(entities = [ProductItemsEntity::class, ProductCart::class, UserAddress::class, OrdersEntity::class], version = 22)
+@Database(entities = [ProductItemsEntity::class, ProductCart::class, UserAddress::class, OrdersEntity::class], version = 24)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase(){
     abstract val  dbDao : DbDao

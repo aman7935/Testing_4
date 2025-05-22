@@ -1,5 +1,6 @@
 package com.example.testing4.views.fragments
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -33,6 +34,7 @@ import com.example.testing4.models.resource.Result
 import com.example.testing4.repo.Repo
 import com.example.testing4.utils.Loader
 import com.example.testing4.viewmodels.ViewModel
+import com.google.gson.Gson
 import com.stripe.Stripe
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
@@ -43,6 +45,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -119,19 +123,21 @@ class CartFragment : Fragment() {
     private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
         when (paymentSheetResult) {
             is PaymentSheetResult.Completed -> {
-                cartItems.forEach { item ->
-                    val order = OrdersEntity(
-                        userId = userID,
-                        products = item,
-                        billAmount = totalAmount,
-                        orderStatus = "Success",
-                        pID = item.id,
-                        quantity = item.quantity,
-                        orderID = orderID,
-                        deliveryDate = deliveryDate
-                    )
-                    viewModel.saveOrdersAndDeleteFromCart(order, userID)
-                }
+
+                val gson=Gson()
+                val jsonData=gson.toJson(cartItems)
+                val jsonFile=writeJsonToFile(requireContext(), jsonData, "products_list${orderID}.json")
+
+                val order = OrdersEntity(
+                    userId = userID,
+                    jsonFilePath = jsonFile.absolutePath,
+                    billAmount = totalAmount,
+                    orderStatus = "Success",
+                    orderID = orderID,
+                    deliveryDate = deliveryDate
+                )
+
+                viewModel.saveOrdersAndDeleteFromCart(order, userID)
 
                 Toast.makeText(requireContext(), "Payment successful!", Toast.LENGTH_SHORT).show()
             }
@@ -311,5 +317,26 @@ class CartFragment : Fragment() {
                 }
             }
         }
+
+        viewModel.isOrderSaved.observe(viewLifecycleOwner)
+        {
+            if (it)
+            {
+                cartItems.forEach {
+                    viewModel.deleteFromCart(it.id,userID)
+                }
+
+            }
+        }
+    }
+
+    private fun writeJsonToFile(context: Context, jsonData: String, fileName: String): File {
+        val file = File(context.filesDir, fileName)
+
+        FileOutputStream(file).use {
+            it.write(jsonData.toByteArray())
+        }
+
+        return file
     }
 }

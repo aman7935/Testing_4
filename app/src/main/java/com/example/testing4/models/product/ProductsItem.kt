@@ -11,6 +11,7 @@ data class ProductsItem(
     val title: String,
     val updatedAt: String,
 
+
     var isFavourite : Int = 0,
     var inCart : Int = 0,
     var quantity : Int = 1

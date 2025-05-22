@@ -32,7 +32,8 @@ class MainActivity : AppCompatActivity() {
             binding.homeIconLayout to R.id.homeFragment,
             binding.categoryLayout to R.id.categoryFragment,
             binding.favoritesLayout to R.id.favoritesFragment,
-            binding.youLayout to R.id.youFragment
+            binding.youLayout to R.id.youFragment,
+            binding.ordersLayout to R.id.ordersFragment
         )
 
         layoutMap.forEach { (layout, destinationId) ->
@@ -59,7 +60,8 @@ class MainActivity : AppCompatActivity() {
             R.id.homeFragment to Pair(binding.homeIcon, binding.homeTv),
             R.id.categoryFragment to Pair(binding.categoryIcon, binding.categoryTv),
             R.id.favoritesFragment to Pair(binding.favoritesIcon, binding.favoritesTv),
-            R.id.youFragment to Pair(binding.youIcon, binding.youTv)
+            R.id.youFragment to Pair(binding.youIcon, binding.youTv),
+            R.id.ordersFragment to Pair(binding.ordersIcon, binding.ordersTv)
         )
 
         navController.addOnDestinationChangedListener { _, destination, _ ->

@@ -92,7 +92,6 @@ interface DbDao {
     @Transaction
     suspend fun saveOrdersAndDeleteFromCart(ordersEntity: OrdersEntity, userId: String) {
         insertOrder(ordersEntity)
-        deleteCartItem(ordersEntity.pID, userId)
     }
 
 }
