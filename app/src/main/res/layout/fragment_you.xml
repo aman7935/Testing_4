@@ -52,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:text="@string/name"
+        android:textStyle="bold"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,10 +78,10 @@
         app:layout_constraintTop_toBottomOf="@+id/mobileNumber">
 
         <TextView
+            android:id="@+id/myOrders"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginStart="5dp"
-            android:layout_weight="1"
             android:background="@color/white"
             android:drawableStart="@drawable/profile_bag"
             android:drawableEnd="@drawable/arrow___right_"

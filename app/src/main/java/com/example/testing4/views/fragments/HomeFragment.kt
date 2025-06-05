@@ -1,10 +1,17 @@
 package com.example.testing4.views.fragments
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -27,8 +34,11 @@ import com.example.testing4.models.product.ProductsItem
 import com.example.testing4.models.resource.Result
 import com.example.testing4.models.viewpagermodels.HomeScreenViewPagerModel
 import com.example.testing4.repo.Repo
+import com.example.testing4.utils.ConstValues.BROADCAST_ACTION
+import com.example.testing4.utils.ConstValues.EXTRA_MESSAGE
 import com.example.testing4.utils.Loader
 import com.example.testing4.viewmodels.ViewModel
+import com.example.testing4.views.activity.MainActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -199,6 +209,33 @@ class HomeFragment : Fragment(){
         viewModel.getProducts()
     }
 
+
+   /* private val messageReceiver = object : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == BROADCAST_ACTION){
+                val message = intent.getStringExtra(EXTRA_MESSAGE)
+                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+            }
+            else{
+                Toast.makeText(requireContext(), "badfasfas", Toast.LENGTH_LONG).show()
+            }
+        }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onStart() {
+        super.onStart()
+        val filter = IntentFilter(BROADCAST_ACTION)
+        requireContext().registerReceiver(messageReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("TAG", "onStop: ")
+    }*/
+
+
     override fun onPause() {
         super.onPause()
         Loader.hideDialog()
@@ -207,6 +244,9 @@ class HomeFragment : Fragment(){
     override fun onDestroy() {
         super.onDestroy()
         scrollJob?.cancel()
+
     }
+
+
 
 }

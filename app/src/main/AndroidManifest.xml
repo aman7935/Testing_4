@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <permission android:name="com.example.testing4.permission.READ_DATA"
+        android:protectionLevel="normal"/>
+
+
 
     <application
         android:allowBackup="true"
@@ -16,6 +20,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Testing4"
         tools:targetApi="31">
+
+        <!--<provider
+            android:name=".contentprovider.Cprovider"
+            android:authorities="com.example.testing4.contentprovider"
+            android:exported="true"
+            android:enabled="true"
+            android:grantUriPermissions="true"
+            android:readPermission="com.example.testing4.permission.READ_DATA"/>-->
+
+        <provider
+            android:name=".contentprovider.Cprovider"
+            android:authorities="com.example.testing4.contentprovider"
+            android:exported="true"
+            android:permission="com.example.testing4.permission.READ_DATA"
+            />
+
+
         <activity
             android:name=".views.maps.MapActivity"
             android:exported="false" />

@@ -1,5 +1,6 @@
 package com.example.testing4.database
 
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
@@ -27,6 +28,10 @@ interface DbDao {
 
     @Query("DELETE FROM ProductItemsEntity WHERE id = :productID AND userId = :userId")
     suspend fun deleteProduct(productID: Int, userId: String)
+
+    //cursor
+    @Query("SELECT * FROM ProductItemsEntity WHERE userId = :userId")
+    fun getAllProductsByUserId(userId: String): Cursor
 
 
     // table for cart products

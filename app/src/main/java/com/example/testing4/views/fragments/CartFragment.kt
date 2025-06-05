@@ -1,6 +1,7 @@
 package com.example.testing4.views.fragments
 
 import android.content.Context
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Index
+import com.example.testing4.NetworkReceiver
 import com.example.testing4.R
 import com.example.testing4.adapters.recyclerviewadapters.CartRvAdapter
 import com.example.testing4.api.RetrofitInstance
@@ -27,11 +28,10 @@ import com.example.testing4.databinding.FragmentCartBinding
 import com.example.testing4.datastore.DataStoreManager
 import com.example.testing4.factory.Factory
 import com.example.testing4.models.entities.OrdersEntity
-import com.example.testing4.models.entities.ProductCart
 import com.example.testing4.models.product.ProductsItem
-import com.example.testing4.models.resource.Resource
 import com.example.testing4.models.resource.Result
 import com.example.testing4.repo.Repo
+import com.example.testing4.utils.ConstValues.BROADCAST_ACTION
 import com.example.testing4.utils.Loader
 import com.example.testing4.viewmodels.ViewModel
 import com.google.gson.Gson
@@ -48,8 +48,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -60,19 +58,23 @@ class CartFragment : Fragment() {
     private lateinit var repo: Repo
     private lateinit var db: Database
     private lateinit var cartRvAdapter: CartRvAdapter
-    private lateinit var dataStore : DataStoreManager
+    private lateinit var dataStore: DataStoreManager
     private var userID: String = ""
     private lateinit var stripe: Stripe
     private lateinit var paymentSheet: PaymentSheet
     private lateinit var paymentSheetCustomerConfig: PaymentSheet.CustomerConfiguration
     private lateinit var clientSecret: String
-    private var orderID : String = ""
-    private var totalAmount : Long = 0
-    private lateinit var deliveryDate : String
+    private var orderID: String = ""
+    private var totalAmount: Long = 0
+    private lateinit var deliveryDate: String
     val calendar = Calendar.getInstance()
+
+    private var message=""
 
 
     private var cartItems = ArrayList<ProductsItem>()
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -91,7 +93,8 @@ class CartFragment : Fragment() {
         lifecycleScope.launch {
             userID = dataStore.getUserId.first()
         }
-        Stripe.apiKey = "sk_test_51RR8KeH8H0Wz0viAgeT61oQACK9ue1Skzk2rq2yCLVy63VUy15Uvld5uZDQr3IF6X1EPBTAPRFFLE2EMz5bpepCJ00NAd8Gahq"
+        Stripe.apiKey =
+            "sk_test_51RR8KeH8H0Wz0viAgeT61oQACK9ue1Skzk2rq2yCLVy63VUy15Uvld5uZDQr3IF6X1EPBTAPRFFLE2EMz5bpepCJ00NAd8Gahq"
         PaymentConfiguration.init(
             requireActivity().applicationContext,
             "pk_test_51RR8KeH8H0Wz0viAb67HBIuEzN607G8ATcrCssZw5zyFp07g2biEURE3EATeDKdSLTdONDA281HtsUEzxZ5lDC6h00CZSXjQEK"
@@ -102,19 +105,19 @@ class CartFragment : Fragment() {
         }
 
         binding.payBtn.setOnClickListener {
-           /* PaymentConfiguration.init(
-                requireActivity().applicationContext,
-                "sk_test_51RR8KeH8H0Wz0viAb67HBIuEzN607G8ATcrCssZw5zyFp07g2biEURE3EATeDKdSLTdONDA281HtsUEzxZ5lDC6h00CZSXjQEK" // Replace with your publishable key
-            )
+            /* PaymentConfiguration.init(
+                 requireActivity().applicationContext,
+                 "sk_test_51RR8KeH8H0Wz0viAb67HBIuEzN607G8ATcrCssZw5zyFp07g2biEURE3EATeDKdSLTdONDA281HtsUEzxZ5lDC6h00CZSXjQEK" // Replace with your publishable key
+             )
 
-            // Assume clientSecret is passed securely from your backend
-            paymentSheet.presentWithPaymentIntent(
-                "sk_test_51RR8KeH8H0Wz0viAgeT61oQACK9ue1Skzk2rq2yCLVy63VUy15Uvld5uZDQr3IF6X1EPBTAPRFFLE2EMz5bpepCJ00NAd8Gahq",
-                PaymentSheet.Configuration(
-                    merchantDisplayName = "Vybeshop",
-                    allowsDelayedPaymentMethods = true
-                )
-            )*/
+             // Assume clientSecret is passed securely from your backend
+             paymentSheet.presentWithPaymentIntent(
+                 "sk_test_51RR8KeH8H0Wz0viAgeT61oQACK9ue1Skzk2rq2yCLVy63VUy15Uvld5uZDQr3IF6X1EPBTAPRFFLE2EMz5bpepCJ00NAd8Gahq",
+                 PaymentSheet.Configuration(
+                     merchantDisplayName = "Vybeshop",
+                     allowsDelayedPaymentMethods = true
+                 )
+             )*/
             createPaymentIntent()
         }
         return binding.root
@@ -124,9 +127,10 @@ class CartFragment : Fragment() {
         when (paymentSheetResult) {
             is PaymentSheetResult.Completed -> {
 
-                val gson=Gson()
-                val jsonData=gson.toJson(cartItems)
-                val jsonFile=writeJsonToFile(requireContext(), jsonData, "products_list${orderID}.json")
+                val gson = Gson()
+                val jsonData = gson.toJson(cartItems)
+                val jsonFile =
+                    writeJsonToFile(requireContext(), jsonData, "products_list${orderID}.json")
 
                 val order = OrdersEntity(
                     userId = userID,
@@ -141,11 +145,17 @@ class CartFragment : Fragment() {
 
                 Toast.makeText(requireContext(), "Payment successful!", Toast.LENGTH_SHORT).show()
             }
+
             is PaymentSheetResult.Canceled -> {
                 Toast.makeText(requireContext(), "Payment canceled!", Toast.LENGTH_SHORT).show()
             }
+
             is PaymentSheetResult.Failed -> {
-                Toast.makeText(requireContext(), "Payment failed: ${paymentSheetResult.error.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Payment failed: ${paymentSheetResult.error.message}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -182,7 +192,7 @@ class CartFragment : Fragment() {
             try {
                 val paymentIntent = withContext(Dispatchers.IO) {
                     val params = PaymentIntentCreateParams.builder()
-                        .setAmount(totalAmount*100)
+                        .setAmount(totalAmount * 100)
                         .setCurrency("inr")
                         .setAutomaticPaymentMethods(
                             PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
@@ -194,7 +204,8 @@ class CartFragment : Fragment() {
                     PaymentIntent.create(params)
                 }
 
-                clientSecret = paymentIntent.clientSecret ?: throw Exception("Client secret is null")
+                clientSecret =
+                    paymentIntent.clientSecret ?: throw Exception("Client secret is null")
                 orderID = paymentIntent.id ?: throw Exception("Order ID is null")
                 Log.d("PaymentIntent", "Created: $clientSecret")
 
@@ -224,14 +235,19 @@ class CartFragment : Fragment() {
             }
         }
 
+        binding.topay.setText(message)
+
         setUpRecyclerView()
         observeData()
-
 
         binding.change.setOnClickListener {
             findNavController().navigate(R.id.addressFragment)
         }
+
+
     }
+
+
 
     private fun calculateBillDetails(items: List<ProductsItem>) {
         var itemTotal = 0.0
@@ -241,21 +257,20 @@ class CartFragment : Fragment() {
         items.forEach {
             val price = it.price?.toDouble() ?: 0.0
             val quantity = it.quantity ?: 1
-            itemTotal += (price*85) * quantity
+            itemTotal += (price * 85) * quantity
         }
 
         val gstAmount = (itemTotal * gstRate).toFloat()
-        if (itemTotal >= 300){
+        if (itemTotal >= 300) {
             delivery == 0.0
             binding.textView2.visibility = View.GONE
-        }
-        else{
-            delivery = itemTotal*0.3
+        } else {
+            delivery = itemTotal * 0.3
             binding.textView2.visibility = View.VISIBLE
-            binding.textView2.text = "Add items worth more then ₹ ${300-itemTotal}"
+            binding.textView2.text = "Add items worth more then ₹ ${300 - itemTotal}"
         }
 
-         totalAmount = (itemTotal + gstAmount + delivery).toLong()
+        totalAmount = (itemTotal + gstAmount + delivery).toLong()
 
         binding.apply {
             amount.text = itemTotal.toString()
@@ -287,7 +302,6 @@ class CartFragment : Fragment() {
             },
             calculateBillDetails = { calculateBillDetails(cartItems) }
         )
-
         binding.cartRV.adapter = cartRvAdapter
         binding.cartRV.layoutManager = LinearLayoutManager(requireContext())
     }
@@ -318,25 +332,35 @@ class CartFragment : Fragment() {
             }
         }
 
-        viewModel.isOrderSaved.observe(viewLifecycleOwner)
-        {
-            if (it)
-            {
+        viewModel.isOrderSaved.observe(viewLifecycleOwner) {
+            if (it) {
                 cartItems.forEach {
-                    viewModel.deleteFromCart(it.id,userID)
+                    viewModel.deleteFromCart(it.id, userID)
                 }
-
             }
         }
     }
 
     private fun writeJsonToFile(context: Context, jsonData: String, fileName: String): File {
         val file = File(context.filesDir, fileName)
-
         FileOutputStream(file).use {
             it.write(jsonData.toByteArray())
         }
-
         return file
+    }
+
+    val messageReceiver = NetworkReceiver{
+        message = it
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onStart() {
+        super.onStart()
+        val filter = IntentFilter(BROADCAST_ACTION)
+        requireContext().registerReceiver(messageReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+    }
+
+    override fun onStop() {
+        super.onStop()
     }
 }

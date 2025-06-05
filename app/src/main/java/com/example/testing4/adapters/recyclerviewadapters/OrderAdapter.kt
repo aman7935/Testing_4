@@ -1,13 +1,9 @@
 package com.example.testing4.adapters.recyclerviewadapters
 
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.testing4.R
 import com.example.testing4.databinding.ItemViewOrderlistBinding
-import com.example.testing4.databinding.OrdersItemViewBinding
 import com.example.testing4.models.entities.OrdersEntity
 
 class OrderAdapter(private val orderList: List<OrdersEntity>) :

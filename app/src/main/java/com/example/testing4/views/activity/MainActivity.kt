@@ -1,12 +1,21 @@
 package com.example.testing4.views.activity
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navOptions
 import com.example.testing4.R
 import com.example.testing4.databinding.ActivityMainBinding
+import com.example.testing4.utils.ConstValues.BROADCAST_ACTION
+import com.example.testing4.utils.ConstValues.EXTRA_MESSAGE
 import com.example.testing4.utils.ViewUtils
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
@@ -23,9 +32,12 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
 
+
         setUpBottomNav()
         observeDestinationChanges()
     }
+
+
 
     private fun setUpBottomNav() {
         val layoutMap = mapOf(
